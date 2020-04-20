@@ -6,23 +6,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <EditText
+        android:id="@+id/editText4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="74dp"
+        android:layout_marginLeft="74dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginBottom="376dp"
+        android:ems="10"
+        android:hint="Введите заметку"
+        android:inputType="number"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintStart_toEndOf="@+id/textView8" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginBottom="28dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Заметка"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView9"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="209dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="324dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/button3"
         android:layout_width="210dp"
         android:layout_height="43dp"
+        android:layout_marginStart="174dp"
+        android:layout_marginLeft="174dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginBottom="176dp"
         android:background="#009688"
         android:text="Новая категория"
         android:textColor="#000000"
-        tools:layout_editor_absoluteX="174dp"
-        tools:layout_editor_absoluteY="241dp" />
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="383dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginBottom="316dp"
         android:fontFamily="sans-serif-medium"
         android:text="Категория:"
         android:textColor="#000000"
@@ -34,9 +82,9 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="35dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginBottom="188dp"
         android:fontFamily="sans-serif-medium"
         android:text="Сумма:"
         android:textColor="#000000"
@@ -52,8 +100,8 @@
         android:layout_marginEnd="28dp"
         android:layout_marginRight="28dp"
         android:ems="10"
+        android:hint="Например: авто"
         android:inputType="textPersonName"
-        android:text="Безнин"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,8 +115,8 @@
         android:layout_marginRight="28dp"
         android:layout_marginBottom="449dp"
         android:ems="10"
+        android:hint="Потраченная"
         android:inputType="number"
-        android:text="1500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView8" />
@@ -77,28 +125,15 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="34dp"
-        android:layout_marginEnd="38dp"
-        android:layout_marginRight="38dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="120dp"
         android:fontFamily="sans-serif-medium"
         android:text="Название:"
         android:textColor="#000000"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/editText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="209dp"
-        android:layout_height="26dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginRight="28dp"
-        android:layout_marginBottom="388dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/button"
