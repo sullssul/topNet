@@ -20,26 +20,28 @@
         tools:layout_editor_absoluteY="-5dp" />
 
     <Button
-        android:id="@+id/add_button"
+        android:id="@+id/add_purchases"
         android:layout_width="377dp"
         android:layout_height="45dp"
         android:layout_marginBottom="10dp"
         android:background="#009688"
         android:shadowRadius="20"
+        android:onClick="tap_add_purchases"
         android:text="Добавить покупку"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/add_money"
+        android:onClick="tap_add_money"
         android:layout_width="362dp"
         android:layout_height="45dp"
         android:layout_marginBottom="16dp"
         android:background="#009688"
         android:text="Добавить доход"
         android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/add_button"
+        app:layout_constraintBottom_toTopOf="@+id/add_purchases"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent" />

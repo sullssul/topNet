@@ -1,6 +1,8 @@
 package com.example.vladkerasosi;
 
-public class Purchases {
+import java.io.Serializable;
+
+public class Purchases implements Serializable {
     private String data;
     private int sum;
     private String typeOfPurchases;
@@ -48,11 +50,15 @@ public class Purchases {
         this.imgRes = imgRes;
     }
 
-    public Purchases(String data, int sum, String typeOfPurchases, String name) {
+    public Purchases() {
+    }
+
+    public Purchases(String data, int sum, String typeOfPurchases, String name, String description) {
         this.data = data;
         this.sum = sum;
         this.typeOfPurchases = typeOfPurchases;
         this.name = name;
+        this.description = description;
     }
 
     public String getTypeOfPurchases() {
