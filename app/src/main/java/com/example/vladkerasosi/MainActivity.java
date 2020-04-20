@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 // Форматирование времени как "день.месяц.год"
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         String dateText = dateFormat.format(currentDate);
-        purchasesArrayList.add(new Purchases(dateText,2500,"авто","заправка"));
+        purchasesArrayList.add(new Purchases(dateText,2500,"авто","заправка"));//fds
         purchasesArrayList.add(new Purchases(dateText,3500,"авто","заправка"));
 
         purchasesArrayList.add(new Purchases(dateText,2500,"авто","заправка"));
