@@ -32,11 +32,13 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> typesOfPurchases=new ArrayList<String>();
     ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
     HashMap<String,Integer> piechartItem=new HashMap<String, Integer>();
+    float Balance=50000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         typesOfPurchases.add("Авто");
         typesOfPurchases.add("Еда");
         typesOfPurchases.add("Медицина");
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         typesOfPurchases.add("Прочее");
 
 
-        setRecyclerView();
+      //  setRecyclerView();
 
 
 
