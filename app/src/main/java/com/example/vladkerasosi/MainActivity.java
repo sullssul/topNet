@@ -1,12 +1,14 @@
 package com.example.vladkerasosi;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -19,7 +21,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -27,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
     ArrayList<String> typesOfPurchases=new ArrayList<String>();
     ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
+    HashMap<String,Integer> piechartItem=new HashMap<String, Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
         typesOfPurchases.add("Авто");
         typesOfPurchases.add("Еда");
         typesOfPurchases.add("Медицина");
@@ -44,12 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         setRecyclerView();
 
-        mPieChart.addPieSlice(new PieModel("Еда", 15, Color.parseColor("#FE6DA8")));
-        mPieChart.addPieSlice(new PieModel("Автомобиль", 25, Color.parseColor("#56B7F1")));
-        mPieChart.addPieSlice(new PieModel("Медицина", 35, Color.parseColor("#CDA67F")));
-        mPieChart.addPieSlice(new PieModel("Развлечения", 9, Color.parseColor("#FED70E")));
 
-        mPieChart.startAnimation();
 
     }
 
@@ -67,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onStart() {
         super.onStart();
@@ -75,7 +75,37 @@ public class MainActivity extends AppCompatActivity {
             purchasesArrayList = (ArrayList<Purchases>) getIntent().getSerializableExtra("purchasesArrayList");
         }
         setRecyclerView();
+        setPiechartItem();
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void setPiechartItem(){
+        double sum;
+        PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
+        Random rand = new Random();
+
+        for(int i=0;i<typesOfPurchases.size();i++){
+            piechartItem.put(typesOfPurchases.get(i),0);
+        }
+        for(int i=0;i<purchasesArrayList.size();i++){
+          //  Integer frequency = piechartItem.get(purchasesArrayList.get(i).getTypeOfPurchases());
+            piechartItem.put(purchasesArrayList.get(i).getTypeOfPurchases(),+purchasesArrayList.get(i).getSum());
+        }
+        for(HashMap.Entry<String, Integer> item : piechartItem.entrySet()){
+            float r = rand.nextFloat();
+            float g = rand.nextFloat();
+            float b = rand.nextFloat();
+            //Color randomColor = new Color(r, g, b);
+
+            mPieChart.addPieSlice(new PieModel(item.getKey(), item.getValue(), Color.rgb(r,g,b)));
+
+        }
+
+        mPieChart.startAnimation();
+
+
+    }
+
 
     public void tap_add_purchases(View view) {
         Intent intent = new Intent(this, Add_new.class);

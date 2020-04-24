@@ -18,13 +18,13 @@ import java.util.Locale;
 public class Add_new extends AppCompatActivity  {
 
 
-    ArrayAdapter spinnerAdapter;
+    ArrayAdapter<String> spinnerAdapter;
     Spinner spinner;
     int sum=0;
     String typeOfPurchases="";
     String name="";
     String description="";
-    ArrayList typesOfPurchases;
+    ArrayList<String> typesOfPurchases;
     ArrayList<Purchases> purchasesArrayList;
 
     Date currentDate = new Date();
@@ -46,7 +46,7 @@ public class Add_new extends AppCompatActivity  {
 
     void createSpinner() {
         spinner = findViewById(R.id.type_spinner);
-        spinnerAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, typesOfPurchases);
+        spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, typesOfPurchases);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
     }
