@@ -88,15 +88,12 @@ public class MainActivity extends AppCompatActivity {
             piechartItem.put(typesOfPurchases.get(i),0);
         }
         for(int i=0;i<purchasesArrayList.size();i++){
-          //  Integer frequency = piechartItem.get(purchasesArrayList.get(i).getTypeOfPurchases());
             piechartItem.put(purchasesArrayList.get(i).getTypeOfPurchases(),+purchasesArrayList.get(i).getSum());
         }
         for(HashMap.Entry<String, Integer> item : piechartItem.entrySet()){
             float r = rand.nextFloat();
             float g = rand.nextFloat();
             float b = rand.nextFloat();
-            //Color randomColor = new Color(r, g, b);
-
             mPieChart.addPieSlice(new PieModel(item.getKey(), item.getValue(), Color.rgb(r,g,b)));
 
         }

@@ -59,6 +59,9 @@ public class Add_new extends AppCompatActivity  {
 
         EditText name_editText=findViewById(R.id.name_edit_text);
         name= String.valueOf(name_editText.getText());
+        if(name.equals("")){
+            name="покупка_"+(purchasesArrayList.size()+1);
+        }
 
         EditText description_editText=findViewById(R.id.description_edit_text);
         description= String.valueOf(description_editText.getText());
@@ -66,6 +69,7 @@ public class Add_new extends AppCompatActivity  {
 
         spinner = findViewById(R.id.type_spinner);
         typeOfPurchases=spinner.getSelectedItem().toString();
+
         purchasesArrayList.add(new Purchases(dateText,sum,typeOfPurchases,name,description));
 
         Intent intent = new Intent(this, MainActivity.class);
