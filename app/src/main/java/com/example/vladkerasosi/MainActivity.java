@@ -112,11 +112,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void tap_add_money(View view) {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "Cоси хуй еще не сделал, говорил же прототип",
-                Toast.LENGTH_SHORT);
 
-        toast.show();
-    }
 }

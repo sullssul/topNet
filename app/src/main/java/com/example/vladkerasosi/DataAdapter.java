@@ -59,7 +59,9 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
            // purcaheseImg = itemView.findViewById(R.id.image);
             title = itemView.findViewById(R.id.title);
-         //   description = itemView.findViewById(R.id.description);
+         //
+            //
+            //    description = itemView.findViewById(R.id.description);
         }
 
 
