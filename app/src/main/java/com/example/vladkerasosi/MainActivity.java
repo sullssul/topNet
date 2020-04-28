@@ -6,12 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import org.eazegraph.lib.charts.PieChart;
@@ -33,12 +36,15 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
     HashMap<String,Integer> piechartItem=new HashMap<String, Integer>();
     float Balance=50000;
+    float startX;
+    PieChart mPieChart;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        recyclerView=findViewById(R.id.recylerView);
         typesOfPurchases.add("Авто");
         typesOfPurchases.add("Еда");
         typesOfPurchases.add("Медицина");
@@ -46,9 +52,31 @@ public class MainActivity extends AppCompatActivity {
         typesOfPurchases.add("Связь");
         typesOfPurchases.add("Развлечения");
         typesOfPurchases.add("Прочее");
+        mPieChart=findViewById(R.id.piechart);
+      //  mPieChart.startAnimation();
+
     }
 
 
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        switch(event.getAction()) {
+            case MotionEvent.ACTION_DOWN: //первое касание
+                startX = event.getX();
+                break;
+            case MotionEvent.ACTION_UP: //отпускание
+                float stopX = event.getX();
+                if (stopX < startX) {
+                    Intent intent = new Intent(this, Profit_Activity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.go_next_out, R.anim.go_next_in);
+
+                }
+                break;
+        }
+        return true;
+    }
 
     public void setRecyclerView(){
         recyclerView = findViewById(R.id.recylerView);
@@ -76,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setPiechartItem(){
-        double sum;
-        PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
+
+        mPieChart = (PieChart) findViewById(R.id.piechart);
         Random rand = new Random();
 
         for(int i=0;i<typesOfPurchases.size();i++){
@@ -94,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        mPieChart.startAnimation();
+
 
 
     }

@@ -9,7 +9,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
@@ -22,12 +25,13 @@ public class Profit_Activity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
-
+    PieChart mPieChart;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<String> typesOfProfit=new ArrayList<String>();
     ArrayList<Profit> profitArrayList=new ArrayList<Profit>();
     HashMap<String,Float> piechartItem=new HashMap<String, Float>();
     float Balance;
+    float startX;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +44,30 @@ public class Profit_Activity extends AppCompatActivity {
         typesOfProfit.add("Вклад");
         typesOfProfit.add("Продажа вещей");
         typesOfProfit.add("Другое");
+        mPieChart=findViewById(R.id.piechart);
+      //  mPieChart.startAnimation();
 
+
+
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        switch(event.getAction()) {
+            case MotionEvent.ACTION_DOWN: //первое касание
+                startX = event.getX();
+                break;
+            case MotionEvent.ACTION_UP: //отпускание
+                float stopX = event.getX();
+                if (stopX > startX) {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.go_prev_in, R.anim.go_prev_out);
+
+                }
+                break;
+        }
+        return true;
     }
 
     public void setRecyclerView(){
@@ -69,7 +96,7 @@ public class Profit_Activity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setPiechartItem(){
 
-        PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
+         mPieChart = (PieChart) findViewById(R.id.piechart);
         Random rand = new Random();
 
         for(int i=0;i<typesOfProfit.size();i++){
@@ -86,7 +113,7 @@ public class Profit_Activity extends AppCompatActivity {
 
         }
 
-        mPieChart.startAnimation();
+
 
 
     }
