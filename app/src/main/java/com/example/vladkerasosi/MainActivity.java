@@ -46,12 +46,6 @@ public class MainActivity extends AppCompatActivity {
         typesOfPurchases.add("Связь");
         typesOfPurchases.add("Развлечения");
         typesOfPurchases.add("Прочее");
-
-
-      //  setRecyclerView();
-
-
-
     }
 
 

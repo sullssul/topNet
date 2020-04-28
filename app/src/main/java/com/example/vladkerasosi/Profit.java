@@ -1,6 +1,8 @@
 package com.example.vladkerasosi;
 
-public class Profit {
+import java.io.Serializable;
+
+public class Profit implements Serializable {
 
     private String date;
     private float sum;

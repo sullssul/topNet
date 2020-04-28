@@ -15,12 +15,12 @@ import java.util.List;
 
 public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_profit.ViewHolder> {
 
-    ArrayList<Purchases> purchasesArrayList;
+    ArrayList<Profit> profitArrayList;
     Context context;
 
 
-    public Data_adapter_profit(ArrayList<Purchases> purchasesArrayList, Context context) {
-        this.purchasesArrayList = purchasesArrayList;
+    public Data_adapter_profit(ArrayList<Profit> profitArrayList, Context context) {
+        this.profitArrayList = profitArrayList;
         this.context = context;
     }
 
@@ -34,8 +34,8 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Purchases purchases = purchasesArrayList.get(position);
-        String title = purchases.getSum() + ";\t" + purchases.getName() + ";\tКатегория: " + purchases.getTypeOfPurchases() + ";\tДата: " + purchases.getData();
+        Profit profit = profitArrayList.get(position);
+        String title = profit.getSum() + ";\t" + profit.getName() + ";\tКатегория: " + profit.getTypeOfProfit() + ";\tДата: " + profit.getDate();
         //  holder.purcaheseImg.setImageResource(purchases.getImgRes());
         holder.title.setText(title);
         //holder.description.setText(purchases.getDescription());
@@ -43,7 +43,7 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
 
     @Override
     public int getItemCount() {
-        return purchasesArrayList.size();
+        return profitArrayList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder //implements

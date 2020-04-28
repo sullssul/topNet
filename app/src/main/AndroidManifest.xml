@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Profit_Activity"></activity>
+        <activity android:name=".ViewFlipper"></activity>
+        <activity android:name=".Add_new_profit" />
+        <activity android:name=".Profit_Activity" />
         <activity android:name=".Add_new" />
         <activity android:name=".MainActivity">
             <intent-filter>
