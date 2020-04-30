@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Purchases implements Serializable {
     private String data;
-    private int sum;
+    private float sum;
     private String typeOfPurchases;
     private int imgRes;
     private String name;
@@ -34,11 +34,11 @@ public class Purchases implements Serializable {
         this.data = data;
     }
 
-    public int getSum() {
+    public float getSum() {
         return sum;
     }
 
-    public void setSum(int sum) {
+    public void setSum(float sum) {
         this.sum = sum;
     }
 
@@ -53,7 +53,7 @@ public class Purchases implements Serializable {
     public Purchases() {
     }
 
-    public Purchases(String data, int sum, String typeOfPurchases, String name, String description) {
+    public Purchases(String data, float sum, String typeOfPurchases, String name, String description) {
         this.data = data;
         this.sum = sum;
         this.typeOfPurchases = typeOfPurchases;

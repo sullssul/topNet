@@ -1,8 +1,9 @@
 package com.example.vladkerasosi;
 
-import androidx.annotation.Nullable;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,11 +12,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
+
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
+import android.widget.ViewFlipper;
+
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
@@ -34,10 +36,13 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
     ArrayList<String> typesOfPurchases=new ArrayList<String>();
     ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
-    HashMap<String,Integer> piechartItem=new HashMap<String, Integer>();
-    float Balance=50000;
-    float startX;
+    HashMap<String,Float> piechartItem=new HashMap<String, Float>();
+    float Balance=0;
+
     PieChart mPieChart;
+
+
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -52,30 +57,8 @@ public class MainActivity extends AppCompatActivity {
         typesOfPurchases.add("Связь");
         typesOfPurchases.add("Развлечения");
         typesOfPurchases.add("Прочее");
-        mPieChart=findViewById(R.id.piechart);
-      //  mPieChart.startAnimation();
+        setTextView();
 
-    }
-
-
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        switch(event.getAction()) {
-            case MotionEvent.ACTION_DOWN: //первое касание
-                startX = event.getX();
-                break;
-            case MotionEvent.ACTION_UP: //отпускание
-                float stopX = event.getX();
-                if (stopX < startX) {
-                    Intent intent = new Intent(this, Profit_Activity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.go_next_out, R.anim.go_next_in);
-
-                }
-                break;
-        }
-        return true;
     }
 
     public void setRecyclerView(){
@@ -96,10 +79,18 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Bundle arguments = getIntent().getExtras();
         if(arguments!=null){
+            if((ArrayList<Purchases>) getIntent().getSerializableExtra("purchasesArrayList")!=null)
             purchasesArrayList = (ArrayList<Purchases>) getIntent().getSerializableExtra("purchasesArrayList");
+            Balance=arguments.getFloat("Balance");
         }
         setRecyclerView();
         setPiechartItem();
+        setTextView();
+    }
+
+    private void setTextView() {
+        TextView textView=findViewById(R.id.balance_purchases);
+        textView.setText(Balance+"");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -109,21 +100,18 @@ public class MainActivity extends AppCompatActivity {
         Random rand = new Random();
 
         for(int i=0;i<typesOfPurchases.size();i++){
-            piechartItem.put(typesOfPurchases.get(i),0);
+            piechartItem.put(typesOfPurchases.get(i), (float) 0);
         }
         for(int i=0;i<purchasesArrayList.size();i++){
-            piechartItem.put(purchasesArrayList.get(i).getTypeOfPurchases(),+purchasesArrayList.get(i).getSum());
+            piechartItem.put(purchasesArrayList.get(i).getTypeOfPurchases(),(float)+purchasesArrayList.get(i).getSum());
         }
-        for(HashMap.Entry<String, Integer> item : piechartItem.entrySet()){
+        for(HashMap.Entry<String, Float> item : piechartItem.entrySet()){
             float r = rand.nextFloat();
             float g = rand.nextFloat();
             float b = rand.nextFloat();
             mPieChart.addPieSlice(new PieModel(item.getKey(), item.getValue(), Color.rgb(r,g,b)));
 
         }
-
-
-
 
     }
 
@@ -132,9 +120,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, Add_new.class);
         intent.putExtra("typesOfPurchases",typesOfPurchases);
         intent.putExtra("purchasesArrayList",purchasesArrayList);
+        intent.putExtra("Balance",Balance);
         startActivity(intent);
 
     }
 
 
+    public void GotToProfit(View view) {
+        Intent intent = new Intent(this, Profit_Activity.class);
+        intent.putExtra("Balance",Balance);
+        startActivity(intent);
+        overridePendingTransition(R.anim.go_next_in, R.anim.go_next_out);
+    }
 }
