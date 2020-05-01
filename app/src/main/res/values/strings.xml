@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Финансовый менеджер</string>
+    <string name="action_settings">Настройки</string>
+
 </resources>

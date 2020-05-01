@@ -2,7 +2,7 @@ package com.example.vladkerasosi;
 
 import java.io.Serializable;
 
-public class Purchases implements Serializable {
+public class Purchases extends ObjectSerializer implements Serializable {
     private String data;
     private float sum;
     private String typeOfPurchases;

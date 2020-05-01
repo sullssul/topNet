@@ -3,6 +3,7 @@ package com.example.vladkerasosi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,13 +21,14 @@ public class Add_new extends AppCompatActivity  {
 
     ArrayAdapter<String> spinnerAdapter;
     Spinner spinner;
+    SharedPreferences sPref;
     float sum=0;
     String typeOfPurchases="";
     String name="";
     String description="";
     ArrayList<String> typesOfPurchases;
-    ArrayList<Purchases> purchasesArrayList;
-    float Balance;
+
+   float Balance;
     Date currentDate = new Date();
     DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
     String dateText = dateFormat.format(currentDate);
@@ -38,11 +40,11 @@ public class Add_new extends AppCompatActivity  {
         Bundle arguments = getIntent().getExtras();
         if(arguments!=null) {
             typesOfPurchases = (ArrayList<String>) getIntent().getSerializableExtra("typesOfPurchases");
-            purchasesArrayList = (ArrayList<Purchases>) getIntent().getSerializableExtra("purchasesArrayList");
-            Balance=arguments.getFloat("Balance");
+           Balance=arguments.getFloat("Balance");
 
         }
         createSpinner();
+
     }
 
     void createSpinner() {
@@ -53,7 +55,11 @@ public class Add_new extends AppCompatActivity  {
     }
 
 
+
+
+
     public void AddNewPurchases(View view) {
+
 
         EditText sum_editText=findViewById(R.id.sum_edit_text);
         sum=Integer.parseInt(String.valueOf(sum_editText.getText()));
@@ -62,7 +68,7 @@ public class Add_new extends AppCompatActivity  {
         EditText name_editText=findViewById(R.id.name_edit_text);
         name= String.valueOf(name_editText.getText());
         if(name.equals("")){
-            name="покупка_"+(purchasesArrayList.size()+1);
+            name="покупка";
         }
 
         EditText description_editText=findViewById(R.id.description_edit_text);
@@ -72,11 +78,11 @@ public class Add_new extends AppCompatActivity  {
         spinner = findViewById(R.id.type_spinner);
         typeOfPurchases=spinner.getSelectedItem().toString();
 
-        purchasesArrayList.add(new Purchases(dateText,sum,typeOfPurchases,name,description));
+        Purchases purchases=new Purchases(dateText,sum,typeOfPurchases,name,description);
 
         Intent intent = new Intent(this, MainActivity.class);
 
-        intent.putExtra("purchasesArrayList",purchasesArrayList);
+        intent.putExtra("purchases",purchases);
         intent.putExtra("Balance",Balance);
         startActivity(intent);
 
