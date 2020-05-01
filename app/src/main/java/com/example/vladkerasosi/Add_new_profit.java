@@ -39,7 +39,7 @@ public class Add_new_profit extends AppCompatActivity {
         Bundle arguments = getIntent().getExtras();
         if(arguments!=null) {
             typesOfProfit = (ArrayList<String>) getIntent().getSerializableExtra("typesOfProfit");
-          //  Balance=arguments.getFloat("Balance");
+           Balance=arguments.getFloat("Balance");
 
         }
         createSpinner();
@@ -76,7 +76,7 @@ public class Add_new_profit extends AppCompatActivity {
         Intent intent = new Intent(this, Profit_Activity.class);
         intent.putExtra("profit",profit);
 
-      //  intent.putExtra("Balance",Balance);
+       intent.putExtra("Balance",Balance);
         startActivity(intent);
     }
 }

@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         typesOfPurchases.add("Связь");
         typesOfPurchases.add("Развлечения");
         typesOfPurchases.add("Прочее");
+
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setTextView() {
         TextView textView=findViewById(R.id.balance_purchases);
         textView.setText(Balance+"");
@@ -165,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        editor.commit();
+        editor.apply();
     }
 
     public void LoadArrayList(){
@@ -180,14 +183,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void SaveBalance(){
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences("Balance",MODE_PRIVATE);
         SharedPreferences.Editor editor = sPref.edit();
         editor.putFloat("Balance", Balance);
-        editor.commit();
+        editor.apply();
     }
 
     public void LoadBalance(){
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences("Balance",MODE_PRIVATE);
         Balance = sPref.getFloat("Balance", 0);
 
     }

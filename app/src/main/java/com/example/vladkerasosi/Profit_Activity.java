@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -12,28 +13,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Random;
 
 public class Profit_Activity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
+    RecyclerView.Adapter<Data_adapter_profit.ViewHolder> adapter;
     PieChart mPieChart;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<String> typesOfProfit=new ArrayList<String>();
@@ -56,12 +50,12 @@ public class Profit_Activity extends AppCompatActivity {
         typesOfProfit.add("Вклад");
         typesOfProfit.add("Продажа вещей");
         typesOfProfit.add("Другое");
+//        sPref = getPreferences(MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sPref.edit();
+//        editor.clear();
+//        editor.apply();
 
-//        Bundle arguments = getIntent().getExtras();
-//        if(arguments!=null){
-//            Balance=arguments.getFloat("Balance");
-//        }
-//        setTextView();
+
     }
 
     @Override
@@ -82,7 +76,7 @@ public class Profit_Activity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        LoadBalance();
         LoadArrayList();
 
         Bundle arguments = getIntent().getExtras();
@@ -141,6 +135,7 @@ public class Profit_Activity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setTextView() {
         TextView textView=findViewById(R.id.Balance_Profit);
         textView.setText(Balance+"");
@@ -191,7 +186,7 @@ public class Profit_Activity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        editor.commit();
+        editor.apply();
     }
 
     public void LoadArrayList(){
@@ -206,14 +201,14 @@ public class Profit_Activity extends AppCompatActivity {
     }
 
     public void SaveBalance(){
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences("Balance",MODE_PRIVATE);
         SharedPreferences.Editor editor = sPref.edit();
         editor.putFloat("Balance", Balance);
-        editor.commit();
+        editor.apply();
     }
 
     public void LoadBalance(){
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences("Balance",MODE_PRIVATE);
         Balance = sPref.getFloat("Balance", 0);
 
     }
