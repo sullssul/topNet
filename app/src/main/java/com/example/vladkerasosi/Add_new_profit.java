@@ -65,7 +65,7 @@ public class Add_new_profit extends AppCompatActivity {
         name= String.valueOf(name_editText.getText());
 
         if(name.equals("")){
-            name="Поступление_";
+            name="Поступление";
         }
 
         spinner = findViewById(R.id.profit_spinner);

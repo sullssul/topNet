@@ -43,7 +43,7 @@ public class Profit_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profit);
-
+        LoadBalance();
         typesOfProfit.add("Зарплата");
         typesOfProfit.add("Пенсия");
         typesOfProfit.add("Стипендия");
