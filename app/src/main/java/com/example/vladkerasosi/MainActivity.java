@@ -43,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String,Float> piechartItem=new HashMap<String, Float>();
     float Balance=0;
     SharedPreferences sPref;
-
     PieChart mPieChart;
+    float totalSum=0;
+    float Limit=0;
+
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -70,11 +72,14 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         LoadArrayList();
         LoadBalance();
+        LoadLimit();
 
         Bundle arguments = getIntent().getExtras();
         if(arguments!=null){
-            if((Purchases) getIntent().getSerializableExtra("purchases")!=null)
+            if((Purchases) getIntent().getSerializableExtra("purchases")!=null) {
                 purchasesArrayList.add((Purchases) getIntent().getSerializableExtra("purchases"));
+                totalSum+=purchasesArrayList.get(purchasesArrayList.size()).getSum();
+            }
             Balance=arguments.getFloat("Balance");
         }
         setRecyclerView();
@@ -193,5 +198,18 @@ public class MainActivity extends AppCompatActivity {
         sPref = getSharedPreferences("Balance",MODE_PRIVATE);
         Balance = sPref.getFloat("Balance", 0);
 
+    }
+
+    public void SaveLimit(){
+
+        sPref = getSharedPreferences("Limit",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sPref.edit();
+        editor.putFloat("Limit",Limit);
+        editor.apply();
+    }
+
+    public void LoadLimit(){
+        sPref = getSharedPreferences("Limit",MODE_PRIVATE);
+        Limit = sPref.getFloat("Limit", 0);
     }
 }
