@@ -4,6 +4,8 @@ package com.example.vladkerasosi;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
     PieChart mPieChart;
     float totalSum=0;
     float Limit=0;
-
+    boolean NotifLimit;
+    private static final int NOTIFY_ID = 101;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -73,18 +76,50 @@ public class MainActivity extends AppCompatActivity {
         LoadArrayList();
         LoadBalance();
         LoadLimit();
+        LoadNotifLimit();
 
         Bundle arguments = getIntent().getExtras();
         if(arguments!=null){
             if((Purchases) getIntent().getSerializableExtra("purchases")!=null) {
                 purchasesArrayList.add((Purchases) getIntent().getSerializableExtra("purchases"));
-                totalSum+=purchasesArrayList.get(purchasesArrayList.size()).getSum();
+                totalSum+=purchasesArrayList.get(purchasesArrayList.size()-1).getSum();
             }
             Balance=arguments.getFloat("Balance");
         }
+        if(NotifLimit)
+            CheckLimit();
         setRecyclerView();
         setPiechartItem();
         setTextView();
+    }
+
+    public void showNotif(){
+        // Идентификатор канала
+        String CHANNEL_ID = "Kera lox";
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_attach_money_black_24dp)
+                        .setContentTitle("Превышение лимита")
+                        .setContentText("Вы превысели ежемесяный лимит в "+ Limit)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(MainActivity.this);
+        notificationManager.notify(NOTIFY_ID, builder.build());
+    }
+
+
+
+
+    public void CheckLimit(){
+        if(totalSum>=Limit){
+            showNotif();
+        }
+    }
+
+    public void LoadNotifLimit(){
+        sPref = getSharedPreferences("NotifLimit",MODE_PRIVATE);
+        NotifLimit = sPref.getBoolean("NotifLimit", false);
     }
 
     @Override
