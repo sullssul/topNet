@@ -3,7 +3,6 @@ package com.example.vladkerasosi;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,29 +17,27 @@ import android.os.Bundle;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Random;
+
+import Model.Purchases;
+import Model.TypesOfPurchases;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<String> typesOfPurchases=new ArrayList<String>();
+   // TypesOfPurchases typesOfPurchases =new TypesOfPurchases(this);;
+    ArrayList<TypesOfPurchases> typesOfPurchases=new ArrayList<TypesOfPurchases>();
     ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
     HashMap<String,Float> piechartItem=new HashMap<String, Float>();
     float Balance=0;
@@ -48,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     PieChart mPieChart;
     float totalSum=0;
     float Limit=0;
+    boolean firstStart=true;
     boolean NotifLimit;
     private static final int NOTIFY_ID = 101;
 
@@ -58,14 +56,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView=findViewById(R.id.recylerView);
-        typesOfPurchases.add("Авто");
-        typesOfPurchases.add("Еда");
-        typesOfPurchases.add("Медицина");
-        typesOfPurchases.add("ЖКХ");
-        typesOfPurchases.add("Связь");
-        typesOfPurchases.add("Развлечения");
-        typesOfPurchases.add("Прочее");
-        LoadBalance();
+        if(typesOfPurchases.size()==0) {
+        typesOfPurchases.add(new TypesOfPurchases(0,"Авто"));
+            typesOfPurchases.add(new TypesOfPurchases(1,"Еда"));
+            typesOfPurchases.add(new TypesOfPurchases(2,"Медицина"));
+            typesOfPurchases.add(new TypesOfPurchases(3,"Развлечения"));
+            typesOfPurchases.add(new TypesOfPurchases(4,"Связь"));
+            typesOfPurchases.add(new TypesOfPurchases(4,"Другое"));
+
+            //typesOfPurchases.save();
+        firstStart=false;
+        }
+
 
     }
 
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         LoadBalance();
         LoadLimit();
         LoadNotifLimit();
+        //typesOfPurchases.load();
 
         Bundle arguments = getIntent().getExtras();
         if(arguments!=null){
@@ -84,11 +87,15 @@ public class MainActivity extends AppCompatActivity {
                 purchasesArrayList.add((Purchases) getIntent().getSerializableExtra("purchases"));
                 totalSum+=purchasesArrayList.get(purchasesArrayList.size()-1).getSum();
             }
-            Balance=arguments.getFloat("Balance");
+//            if(arguments.getString("newTypeToMain")!=null) {
+//                typesOfPurchases.add(arguments.getString("newTypeToMain"));
+//            }
+           // Balance=arguments.getFloat("Balance");
         }
-        if(NotifLimit)
-            CheckLimit();
+//        if(NotifLimit)
+//            CheckLimit();
         setRecyclerView();
+        if(purchasesArrayList.size()!=0)
         setPiechartItem();
         setTextView();
     }
@@ -127,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         SaveArrayList();
         SaveBalance();
+        typesOfPurchases.save();
+        //SaveTypesOfPurchases();
     }
 
     @Override
@@ -134,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         SaveArrayList();
         SaveBalance();
+        typesOfPurchases.save();
+//        SaveTypesOfPurchases();
+
     }
 
     @Override
@@ -188,8 +200,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void tap_add_purchases(View view) {
         Intent intent = new Intent(this, Add_new.class);
-        intent.putExtra("typesOfPurchases",typesOfPurchases);
-        intent.putExtra("Balance",Balance);
+       // intent.putExtra("typesOfPurchases",typesOfPurchases);
+     //   intent.putExtra("Balance",Balance);
         startActivity(intent);
     }
 
@@ -200,8 +212,31 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.go_next_in, R.anim.go_next_out);
     }
 
+//    public  void SaveTypesOfPurchases(){
+//        sPref = getSharedPreferences("typesOfPurchases",MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sPref.edit();
+//        try {
+//            editor.putString("typesOfPurchases", ObjectSerializer.serialize(typesOfPurchases));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        editor.apply();
+//    }
+//
+//    public void LoadTypesOfPurchases(){
+//        sPref = getSharedPreferences("typesOfPurchases",MODE_PRIVATE);
+//        try {
+//            typesOfPurchases = ( ArrayList<String>) ObjectSerializer.deserialize(sPref.getString("typesOfPurchases", ObjectSerializer.serialize(new ArrayList<String>())));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+
     public void SaveArrayList(){
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences("purchasesArrayList",MODE_PRIVATE);
         SharedPreferences.Editor editor = sPref.edit();
         try {
             editor.putString("purchasesArrayList", ObjectSerializer.serialize(purchasesArrayList));
@@ -212,7 +247,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void LoadArrayList(){
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences("purchasesArrayList",MODE_PRIVATE);
+
         try {
             purchasesArrayList = (ArrayList<Purchases>) ObjectSerializer.deserialize(sPref.getString("purchasesArrayList", ObjectSerializer.serialize(new ArrayList<Purchases>())));
         } catch (IOException e) {

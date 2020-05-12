@@ -1,4 +1,4 @@
-package com.example.vladkerasosi;
+package Model;
 
 import android.content.SharedPreferences;
 

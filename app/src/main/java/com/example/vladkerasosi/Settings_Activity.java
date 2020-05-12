@@ -40,9 +40,7 @@ public class Settings_Activity extends AppCompatActivity implements CompoundButt
                     enambledEditText(true);
                     NotifLimit = true;
                     SaveNotifLimit();
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            "NotifLimit = " + NotifLimit, Toast.LENGTH_SHORT);
-                    toast.show();
+
                 }
                 if (!isChecked) {
                     enambledEditText(false);
@@ -60,9 +58,7 @@ public class Settings_Activity extends AppCompatActivity implements CompoundButt
             sw.setChecked(false);
             editText.setEnabled(false);
         }
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "NotifLimit = " + NotifLimit, Toast.LENGTH_SHORT);
-        toast.show();
+
         LoadLimit();
         setEditText();
     }
@@ -131,6 +127,19 @@ public class Settings_Activity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+    }
+
+    public void ClearData(View view) {
+//        sPref = getSharedPreferences("typesOfPurchases", MODE_PRIVATE);
+  //    SharedPreferences.Editor editor = sPref.edit();
+//        editor.clear();
+//        editor.apply();
+//        sPref = getSharedPreferences("purchasesArrayList", MODE_PRIVATE);
+//         editor = sPref.edit();
+//        editor.clear();
+//        editor.apply();
+
 
     }
 }

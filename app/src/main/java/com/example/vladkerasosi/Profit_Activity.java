@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import Model.Profit;
+
 public class Profit_Activity extends AppCompatActivity {
 
     RecyclerView recyclerView;
@@ -83,7 +85,8 @@ public class Profit_Activity extends AppCompatActivity {
         if(arguments!=null){
             if((Profit) getIntent().getSerializableExtra("profit")!=null)
                 profitArrayList.add((Profit) getIntent().getSerializableExtra("profit"));
-           Balance=arguments.getFloat("Balance");
+
+        //   Balance=arguments.getFloat("Balance");
 
         }
         setRecyclerView();
@@ -167,7 +170,7 @@ public class Profit_Activity extends AppCompatActivity {
     public void tap_add_profit(View view) {
         Intent intent = new Intent(this, Add_new_profit.class);
         intent.putExtra("typesOfProfit",typesOfProfit);
-       intent.putExtra("Balance",Balance);
+    //  = intent.putExtra("Balance",Balance);
         startActivity(intent);
     }
 

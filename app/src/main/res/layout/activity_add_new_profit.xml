@@ -6,19 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Add_new_profit">
 
-    <Button
-        android:id="@+id/new_type_button"
-        android:layout_width="210dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginRight="25dp"
-        android:background="#009688"
-        android:text="Новая категория"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profit_spinner" />
-
 
     <TextView
         android:id="@+id/textView9"

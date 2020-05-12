@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import Model.Profit;
+
 public class Add_new_profit extends AppCompatActivity {
 
     ArrayAdapter<String> spinnerAdapter;
