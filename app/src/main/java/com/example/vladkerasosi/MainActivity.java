@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     public void editPurchases(final Purchases purchases,final int position)
     {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
-        View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
+        @SuppressLint("InflateParams") View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
 
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
         alertDialogBuilderUserInput.setView(view);
@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
         appDatabase.getPur_Pro_Dao().deletePurchases(purchases);
         dataAdapter.notifyDataSetChanged();
         setPiechartItem();
+        setTextView();
 
     }
 
