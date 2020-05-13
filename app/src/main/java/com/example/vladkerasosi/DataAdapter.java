@@ -14,12 +14,14 @@ import Model.Purchases;
 
 public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
-    ArrayList<Purchases> purchasesArrayList;
-    Context context;
+    private ArrayList<Purchases> purchasesArrayList;
+    private Context context;
+    private MainActivity mainActivity;
 
-    public DataAdapter(ArrayList<Purchases> purchasesArrayList, Context context) {
+    public DataAdapter(ArrayList<Purchases> purchasesArrayList, Context context,MainActivity mainActivity) {
         this.purchasesArrayList = purchasesArrayList;
         this.context = context;
+        this.mainActivity=mainActivity;
     }
 
     @NonNull
@@ -31,12 +33,22 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Purchases purchases = purchasesArrayList.get(position);
-        String title = purchases.getSum() + ";\t" + purchases.getName() + ";\tКатегория: " + purchases.getTypesOfPurchasesName() + ";\tДата: " + purchases.getData();
-      //  holder.purcaheseImg.setImageResource(purchases.getImgRes());
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        final Purchases purchases = purchasesArrayList.get(position);
+        String title = purchases.getSum() + ";\t"
+                + purchases.getName()
+                + ";\tКатегория: "
+                + purchases.getTypesOfPurchasesName()
+                + ";\tДата: " + purchases.getData();
+
         holder.title.setText(title);
-        //holder.description.setText(purchases.getDescription());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    mainActivity.editPurchases(purchases,position);
+            }
+        });
+
     }
 
     @Override

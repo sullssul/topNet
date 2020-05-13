@@ -1,6 +1,7 @@
 package com.example.vladkerasosi;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,11 +11,25 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import Data.AppDatabase;
+import Model.Profit;
+import Model.Purchases;
+import Model.TypeOfProfit;
+import Model.TypesOfPurchases;
+
 
 public class Settings_Activity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     float Limit = 0;
     SharedPreferences sPref;
     Boolean NotifLimit;
+    AppDatabase appDatabase;
+    private ArrayList<TypesOfPurchases> typesOfPurchases=new ArrayList<TypesOfPurchases>();
+    private ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
+    private ArrayList<TypeOfProfit> typesOfProfit=new ArrayList<>();
+    private ArrayList<Profit> profitArrayList=new ArrayList<Profit>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +37,14 @@ public class Settings_Activity extends AppCompatActivity implements CompoundButt
         setContentView(R.layout.activity_settings);
         Switch sw = findViewById(R.id.limit_switch);
         sw.setOnCheckedChangeListener(this);
+
+         appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "AppDB")
+                .allowMainThreadQueries()
+                .build();
+        purchasesArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllPurchases());
+        typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
+        profitArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllProfit());
+        typesOfProfit.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfProfit());
     }
 
 
@@ -135,5 +158,25 @@ public class Settings_Activity extends AppCompatActivity implements CompoundButt
       SharedPreferences.Editor editor = sPref.edit();
         editor.clear();
         editor.apply();
+
+        for(Purchases purchases:purchasesArrayList){
+            appDatabase.getPur_Pro_Dao().deletePurchases(purchases);
+        }
+
+        for(Profit profit:profitArrayList){
+            appDatabase.getPur_Pro_Dao().deleteProfit(profit);
+        }
+    }
+
+    public void deletePurTypes(View view) {
+        for(TypesOfPurchases tpPur: typesOfPurchases){
+            appDatabase.getPur_Pro_Dao().deleteTypeOfPurchases(tpPur);
+        }
+    }
+
+    public void deleteProfType(View view) {
+        for(TypeOfProfit tpProf: typesOfProfit){
+            appDatabase.getPur_Pro_Dao().deleteTypeOfProfit(tpProf);
+        }
     }
 }

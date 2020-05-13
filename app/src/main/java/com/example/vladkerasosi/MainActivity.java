@@ -2,6 +2,7 @@ package com.example.vladkerasosi;
 
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -10,16 +11,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import org.eazegraph.lib.charts.PieChart;
@@ -32,6 +40,7 @@ import java.util.Random;
 
 import Data.AppDatabase;
 import Model.Purchases;
+
 import Model.TypesOfPurchases;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private AppDatabase appDatabase;
     private float Balance=0;
 
+    private ArrayList<String> types=new ArrayList<>();
+    ArrayAdapter<String> spinnerAdapter;
 
     SharedPreferences sPref;
     private float totalSum=0;
@@ -68,12 +79,18 @@ public class MainActivity extends AppCompatActivity {
                 .allowMainThreadQueries()
                 .build();
 
-        purchasesArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllPurchases());
-        typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
+        loadData();
 
         if(typesOfPurchases.isEmpty())  firstStart();
 
 
+    }
+
+    private void loadData(){
+        purchasesArrayList.clear();
+        typesOfPurchases.clear();
+        purchasesArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllPurchases());
+        typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
     }
 
     private void firstStart(){
@@ -93,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         LoadBalance();
+        loadData();
 //        LoadLimit();
 //        LoadNotifLimit();
 //        if(NotifLimit)
@@ -102,9 +120,146 @@ public class MainActivity extends AppCompatActivity {
         setTextView();
     }
 
+    private void convertToString(){
+        types.clear();
+            for (TypesOfPurchases typePurchases : typesOfPurchases) {
+                types.add(typePurchases.getType_name_purchases());
+            }
+    }
+
+
     public void editPurchases(final Purchases purchases,final int position)
     {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
+        View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
 
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
+        alertDialogBuilderUserInput.setView(view);
+
+        TextView titleTV = view.findViewById(R.id.titleTV);
+         final EditText nameEditText = view.findViewById(R.id.nameEditText);
+         final EditText priceEditText = view.findViewById(R.id.priceEditText);
+         final EditText decriptionEditText=view.findViewById(R.id.descriptiontEdit);
+         final EditText dateEditText=view.findViewById(R.id.dateEditText);
+         final Spinner spinner=view.findViewById(R.id.spinerEdit);
+
+        if(purchases!=null){
+             nameEditText.setText(purchases.getName());
+            priceEditText.setText(String.valueOf(purchases.getSum()) );
+            decriptionEditText.setText(purchases.getDescription());
+            dateEditText.setText(purchases.getData());
+
+            convertToString();
+
+            spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(spinnerAdapter);
+            for(int i=0;i<typesOfPurchases.size();i++) {
+                if(typesOfPurchases.get(i).equals(purchases.getTypesOfPurchasesName())){
+                    spinner.setSelection(i);
+                }
+            }
+
+        }
+
+        alertDialogBuilderUserInput.setCancelable(true)
+                .setPositiveButton("Обновить", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton("Удалить", new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletePurchases(purchases, position);
+
+                    }
+                })
+                .setNeutralButton("Отмена",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,
+                                        int id) {
+                        dialog.cancel();
+                    }
+                });
+
+
+        final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+        alertDialog.show();
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+
+                if (TextUtils.isEmpty(nameEditText.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Введите название покупки!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (TextUtils.isEmpty(priceEditText.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Введите сумму!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (TextUtils.isEmpty(dateEditText.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Введите дату!", Toast.LENGTH_SHORT).show();
+                    return;
+                }else if (TextUtils.isEmpty(decriptionEditText.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Введите заметку!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else{
+                    alertDialog.dismiss();
+                }
+
+
+                if (purchases!=null) {
+
+                    Balance+=purchases.getSum();
+                    updatePurchases(nameEditText.getText().toString(),
+                            decriptionEditText.getText().toString() ,
+                            Float.parseFloat(priceEditText.getText().toString()),
+                            dateEditText.getText().toString(),
+                            new TypesOfPurchases(spinner.getSelectedItemId(),spinner.getSelectedItem().toString()),
+                            position);
+                }
+            }
+        });
+
+
+
+
+
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void updatePurchases(String name, String description, float sum, String date, TypesOfPurchases typeOfPurchases, int position){
+
+        Balance-=sum;
+
+        Purchases purchases=purchasesArrayList.get(position);
+
+        purchases.setName(name);
+        purchases.setDescription(description);
+        purchases.setData(date);
+        purchases.setSum(sum);
+        purchases.setTypesOfPurchases(typeOfPurchases);
+
+        appDatabase.getPur_Pro_Dao().updatePurchases(purchases);
+        purchasesArrayList.set(position,purchases);
+        dataAdapter.notifyDataSetChanged();
+        setPiechartItem();
+        setTextView();
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void deletePurchases(Purchases purchases, int position){
+
+        Balance+=purchases.getSum();
+        purchasesArrayList.remove(position);
+        appDatabase.getPur_Pro_Dao().deletePurchases(purchases);
+        dataAdapter.notifyDataSetChanged();
+        setPiechartItem();
 
     }
 
@@ -161,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
     public void setRecyclerView(){
         recyclerView = findViewById(R.id.recylerView);
         recyclerView.setHasFixedSize(true);
-        dataAdapter = new DataAdapter(purchasesArrayList, this);
+        dataAdapter = new DataAdapter(purchasesArrayList, this,MainActivity.this);
         layoutManager = new LinearLayoutManager(this);
 
         recyclerView.setAdapter(dataAdapter);
@@ -208,7 +363,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void GotToProfit(View view) {
         Intent intent = new Intent(this, Profit_Activity.class);
-      // intent.putExtra("Balance",Balance);
         startActivity(intent);
         overridePendingTransition(R.anim.go_next_in, R.anim.go_next_out);
     }

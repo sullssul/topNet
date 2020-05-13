@@ -7,10 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,7 +21,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import Data.AppDatabase;
-import Model.Balance;
 import Model.Profit;
 import Model.Purchases;
 import Model.TypeOfProfit;
@@ -146,7 +143,8 @@ public class Add_new extends AppCompatActivity  {
 
         if (!TextUtils.isEmpty(sum_editText.getText())) {
 
-            sum=Integer.parseInt(String.valueOf(sum_editText.getText()));
+            sum=Float.parseFloat(sum_editText.getText().toString());
+
             if(TextUtils.isEmpty(name_editText.getText())){
                 name="покупка";
             }   else {

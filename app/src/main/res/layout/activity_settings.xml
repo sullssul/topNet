@@ -6,6 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".Settings_Activity"
     >
+
+    <Button
+        android:id="@+id/deleteProfType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="105dp"
+        android:layout_marginLeft="105dp"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginRight="45dp"
+        android:background="#009688"
+        android:onClick="deleteProfType"
+        android:text="Удалить все категории доходов"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clearData" />
+
     <Switch
         android:id="@+id/limit_switch"
         android:layout_width="101dp"
@@ -83,7 +100,6 @@
 
     <Button
         android:id="@+id/clearData"
-        android:onClick="ClearData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="122dp"
@@ -93,11 +109,31 @@
         android:layout_marginRight="149dp"
         android:layout_marginBottom="287dp"
         android:background="#009688"
+        android:onClick="ClearData"
         android:text="Очистить данные"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+        app:layout_constraintTop_toBottomOf="@+id/textView12"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/deletePurType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="105dp"
+        android:layout_marginLeft="105dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginRight="45dp"
+        android:background="#009688"
+        android:onClick="deletePurTypes"
+        android:text="Удалить все категории расходов"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deleteProfType" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

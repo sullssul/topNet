@@ -14,13 +14,15 @@ import Model.Profit;
 
 public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_profit.ViewHolder> {
 
-    ArrayList<Profit> profitArrayList;
-    Context context;
+    private ArrayList<Profit> profitArrayList;
+    private Context context;
+    private Profit_Activity profit_activity;
 
 
-    public Data_adapter_profit(ArrayList<Profit> profitArrayList, Context context) {
+    Data_adapter_profit(ArrayList<Profit> profitArrayList, Context context,Profit_Activity profit_activity) {
         this.profitArrayList = profitArrayList;
         this.context = context;
+        this.profit_activity=profit_activity;
     }
 
     @NonNull
@@ -32,12 +34,19 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Profit profit = profitArrayList.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        final Profit profit = profitArrayList.get(position);
         String title = profit.getSum() + ";\t" + profit.getName() + ";\tКатегория: " + profit.getTypeOfProfitName() + ";\tДата: " + profit.getDate();
-        //  holder.purcaheseImg.setImageResource(purchases.getImgRes());
+
         holder.title.setText(title);
-        //holder.description.setText(purchases.getDescription());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                profit_activity.editProfit(profit,position);
+            }
+        });
+
     }
 
     @Override
@@ -57,27 +66,13 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
             super(itemView);
             // itemView.setOnClickListener(this);
 
-            // purcaheseImg = itemView.findViewById(R.id.image);
+            // purcaheseImg =
             title = itemView.findViewById(R.id.title);
-            //
-            //
-            //    description = itemView.findViewById(R.id.description);
+
         }
 
 
 
-//        @Override
-//        public void onClick(View v) {
-//            int position = getAdapterPosition();
-//            Purchases purchases = purchasesArrayList.get(position);
-//
-//
-//            Intent intent = new Intent(context, RecipeActivity.class);
-//            intent.putExtra("imageResource", pizzaRecipeItem.getImageResource());
-//            intent.putExtra("title", pizzaRecipeItem.getTitle());
-//            intent.putExtra("description", pizzaRecipeItem.getDescription());
-//            intent.putExtra("recipe", pizzaRecipeItem.getRecipe());
-//            context.startActivity(intent);
-//        }
+
     }
 }
