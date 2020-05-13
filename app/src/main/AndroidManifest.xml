@@ -11,7 +11,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Add_newType"></activity>
         <activity android:name=".Settings_Activity" />
-        <activity android:name=".Add_new_profit" />
         <activity android:name=".Profit_Activity" />
         <activity android:name=".Add_new" />
         <activity android:name=".MainActivity">

@@ -7,6 +7,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -29,23 +30,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import Data.AppDatabase;
 import Model.Purchases;
 import Model.TypesOfPurchases;
 
 public class MainActivity extends AppCompatActivity {
+
     RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
-   // TypesOfPurchases typesOfPurchases =new TypesOfPurchases(this);;
-    ArrayList<TypesOfPurchases> typesOfPurchases=new ArrayList<TypesOfPurchases>();
-    ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
-    HashMap<String,Float> piechartItem=new HashMap<String, Float>();
-    float Balance=0;
+    private DataAdapter dataAdapter;
+
+    private ArrayList<TypesOfPurchases> typesOfPurchases=new ArrayList<TypesOfPurchases>();
+    private ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
+    private HashMap<String,Float> piechartItem=new HashMap<String, Float>();
+    private PieChart mPieChart;
+
+    private AppDatabase appDatabase;
+    private float Balance=0;
+
+
     SharedPreferences sPref;
-    PieChart mPieChart;
-    float totalSum=0;
-    float Limit=0;
-    boolean firstStart=true;
+    private float totalSum=0;
+    private float Limit=0;
+
     boolean NotifLimit;
     private static final int NOTIFY_ID = 101;
 
@@ -56,18 +63,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView=findViewById(R.id.recylerView);
-        if(typesOfPurchases.size()==0) {
-        typesOfPurchases.add(new TypesOfPurchases(0,"Авто"));
-            typesOfPurchases.add(new TypesOfPurchases(1,"Еда"));
-            typesOfPurchases.add(new TypesOfPurchases(2,"Медицина"));
-            typesOfPurchases.add(new TypesOfPurchases(3,"Развлечения"));
-            typesOfPurchases.add(new TypesOfPurchases(4,"Связь"));
-            typesOfPurchases.add(new TypesOfPurchases(4,"Другое"));
 
-            //typesOfPurchases.save();
-        firstStart=false;
-        }
+        appDatabase = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"AppDB")
+                .allowMainThreadQueries()
+                .build();
 
+        purchasesArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllPurchases());
+        typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
+
+        if(typesOfPurchases.isEmpty())  firstStart();
+
+
+    }
+
+    private void firstStart(){
+
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Авто"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Еда"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Медицина"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Развлечения"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Связь"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Другое"));
+        typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
 
     }
 
@@ -75,29 +92,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        LoadArrayList();
         LoadBalance();
-        LoadLimit();
-        LoadNotifLimit();
-        //typesOfPurchases.load();
-
-        Bundle arguments = getIntent().getExtras();
-        if(arguments!=null){
-            if((Purchases) getIntent().getSerializableExtra("purchases")!=null) {
-                purchasesArrayList.add((Purchases) getIntent().getSerializableExtra("purchases"));
-                totalSum+=purchasesArrayList.get(purchasesArrayList.size()-1).getSum();
-            }
-//            if(arguments.getString("newTypeToMain")!=null) {
-//                typesOfPurchases.add(arguments.getString("newTypeToMain"));
-//            }
-           // Balance=arguments.getFloat("Balance");
-        }
+//        LoadLimit();
+//        LoadNotifLimit();
 //        if(NotifLimit)
 //            CheckLimit();
         setRecyclerView();
-        if(purchasesArrayList.size()!=0)
-        setPiechartItem();
+        if(!purchasesArrayList.isEmpty()) setPiechartItem();
         setTextView();
+    }
+
+    public void editPurchases(final Purchases purchases,final int position)
+    {
+
+
     }
 
     public void showNotif(){
@@ -116,8 +124,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     public void CheckLimit(){
         if(totalSum>=Limit){
             showNotif();
@@ -132,20 +138,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SaveArrayList();
         SaveBalance();
-        typesOfPurchases.save();
-        //SaveTypesOfPurchases();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        SaveArrayList();
-        SaveBalance();
-        typesOfPurchases.save();
-//        SaveTypesOfPurchases();
-
+       SaveBalance();
     }
 
     @Override
@@ -162,10 +161,10 @@ public class MainActivity extends AppCompatActivity {
     public void setRecyclerView(){
         recyclerView = findViewById(R.id.recylerView);
         recyclerView.setHasFixedSize(true);
-        adapter = new DataAdapter(purchasesArrayList, this);
+        dataAdapter = new DataAdapter(purchasesArrayList, this);
         layoutManager = new LinearLayoutManager(this);
 
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(dataAdapter);
         recyclerView.setLayoutManager(layoutManager);
     }
 
@@ -183,10 +182,13 @@ public class MainActivity extends AppCompatActivity {
         Random rand = new Random();
 
         for(int i=0;i<typesOfPurchases.size();i++){
-            piechartItem.put(typesOfPurchases.get(i), (float) 0);
+
+            piechartItem.put(typesOfPurchases.get(i).getType_name_purchases(), (float) 0);
         }
         for(int i=0;i<purchasesArrayList.size();i++){
-            piechartItem.put(purchasesArrayList.get(i).getTypeOfPurchases(),piechartItem.get(purchasesArrayList.get(i).getTypeOfPurchases())+(float)purchasesArrayList.get(i).getSum());
+
+            String type=purchasesArrayList.get(i).getTypesOfPurchasesName();
+            piechartItem.put(type,piechartItem.get(type)+(float)purchasesArrayList.get(i).getSum());
         }
         for(HashMap.Entry<String, Float> item : piechartItem.entrySet()){
             float r = rand.nextFloat();
@@ -200,8 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void tap_add_purchases(View view) {
         Intent intent = new Intent(this, Add_new.class);
-       // intent.putExtra("typesOfPurchases",typesOfPurchases);
-     //   intent.putExtra("Balance",Balance);
+        intent.putExtra("typeAdd","purchases");
         startActivity(intent);
     }
 
@@ -210,52 +211,6 @@ public class MainActivity extends AppCompatActivity {
       // intent.putExtra("Balance",Balance);
         startActivity(intent);
         overridePendingTransition(R.anim.go_next_in, R.anim.go_next_out);
-    }
-
-//    public  void SaveTypesOfPurchases(){
-//        sPref = getSharedPreferences("typesOfPurchases",MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sPref.edit();
-//        try {
-//            editor.putString("typesOfPurchases", ObjectSerializer.serialize(typesOfPurchases));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        editor.apply();
-//    }
-//
-//    public void LoadTypesOfPurchases(){
-//        sPref = getSharedPreferences("typesOfPurchases",MODE_PRIVATE);
-//        try {
-//            typesOfPurchases = ( ArrayList<String>) ObjectSerializer.deserialize(sPref.getString("typesOfPurchases", ObjectSerializer.serialize(new ArrayList<String>())));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-    public void SaveArrayList(){
-        sPref = getSharedPreferences("purchasesArrayList",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        try {
-            editor.putString("purchasesArrayList", ObjectSerializer.serialize(purchasesArrayList));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        editor.apply();
-    }
-
-    public void LoadArrayList(){
-        sPref = getSharedPreferences("purchasesArrayList",MODE_PRIVATE);
-
-        try {
-            purchasesArrayList = (ArrayList<Purchases>) ObjectSerializer.deserialize(sPref.getString("purchasesArrayList", ObjectSerializer.serialize(new ArrayList<Purchases>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     public void SaveBalance(){

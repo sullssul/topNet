@@ -47,6 +47,10 @@ public class Profit implements Serializable {
         return typeOfProfit;
     }
 
+    public String getTypeOfProfitName() {
+        return typeOfProfit.getType_profit_name();
+    }
+
     public void setTypeOfProfit(TypeOfProfit typeOfProfit) {
         this.typeOfProfit = typeOfProfit;
     }

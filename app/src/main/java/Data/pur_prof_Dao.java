@@ -1,5 +1,6 @@
 package Data;
 
+import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -12,7 +13,38 @@ import Model.Purchases;
 import Model.TypeOfProfit;
 import Model.TypesOfPurchases;
 
-public interface profitDAO {
+@Dao
+public interface pur_prof_Dao {
+
+    @Insert
+    public long addPurchases(Purchases purchases);
+
+    @Update
+    public void updatePurchases(Purchases purchases);
+
+    @Delete
+    public void deletePurchases(Purchases purchases);
+
+    @Query("select * from purchases")
+    public List<Purchases> getAllPurchases();
+
+    @Query("select * from purchases where purchases_id ==:purId ")
+    public  Purchases getPurchases(long purId);
+
+    @Insert
+    long addTypeOfPurchases(TypesOfPurchases typesOfPurchases);
+
+    @Update
+    public void updateTypeOfPurchases(TypesOfPurchases typesOfPurchases);
+
+    @Delete
+    public void deleteTypeOfPurchases(TypesOfPurchases typesOfPurchases);
+
+    @Query("select * from purchases_types_table")
+    public List<TypesOfPurchases> getAllTypeOfPurchases();
+
+    @Query("select * from purchases_types_table where type_purchases_id ==:typePurId ")
+    public  TypesOfPurchases getTypeOfPurchases(long typePurId);
 
     @Insert
     public long addProfit(Profit profit);

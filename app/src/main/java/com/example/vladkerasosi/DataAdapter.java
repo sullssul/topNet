@@ -33,7 +33,7 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Purchases purchases = purchasesArrayList.get(position);
-        String title = purchases.getSum() + ";\t" + purchases.getName() + ";\tКатегория: " + purchases.getTypeOfPurchases() + ";\tДата: " + purchases.getData();
+        String title = purchases.getSum() + ";\t" + purchases.getName() + ";\tКатегория: " + purchases.getTypesOfPurchasesName() + ";\tДата: " + purchases.getData();
       //  holder.purcaheseImg.setImageResource(purchases.getImgRes());
         holder.title.setText(title);
         //holder.description.setText(purchases.getDescription());

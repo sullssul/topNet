@@ -41,7 +41,11 @@ public class Purchases extends ObjectSerializer implements Serializable {
         this.id = id;
     }
 
-    public String getTypesOfPurchases() {
+    public TypesOfPurchases getTypesOfPurchases() {
+        return typesOfPurchases;
+    }
+
+    public String getTypesOfPurchasesName() {
         return typesOfPurchases.getType_name_purchases();
     }
 

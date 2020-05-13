@@ -34,7 +34,7 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Profit profit = profitArrayList.get(position);
-        String title = profit.getSum() + ";\t" + profit.getName() + ";\tКатегория: " + profit.getTypeOfProfit() + ";\tДата: " + profit.getDate();
+        String title = profit.getSum() + ";\t" + profit.getName() + ";\tКатегория: " + profit.getTypeOfProfitName() + ";\tДата: " + profit.getDate();
         //  holder.purcaheseImg.setImageResource(purchases.getImgRes());
         holder.title.setText(title);
         //holder.description.setText(purchases.getDescription());

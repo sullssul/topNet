@@ -131,15 +131,9 @@ public class Settings_Activity extends AppCompatActivity implements CompoundButt
     }
 
     public void ClearData(View view) {
-//        sPref = getSharedPreferences("typesOfPurchases", MODE_PRIVATE);
-  //    SharedPreferences.Editor editor = sPref.edit();
-//        editor.clear();
-//        editor.apply();
-//        sPref = getSharedPreferences("purchasesArrayList", MODE_PRIVATE);
-//         editor = sPref.edit();
-//        editor.clear();
-//        editor.apply();
-
-
+        sPref = getSharedPreferences("Balance", MODE_PRIVATE);
+      SharedPreferences.Editor editor = sPref.edit();
+        editor.clear();
+        editor.apply();
     }
 }

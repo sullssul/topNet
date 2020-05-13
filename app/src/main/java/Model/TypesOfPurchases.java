@@ -43,51 +43,5 @@ public class TypesOfPurchases  {
         this.type_name_purchases = type_name_purchases;
     }
 
-    //    public int size(){
-//        return this.typesOfPurchases.size();
-//    }
-//
-//    public void add(String newType){
-//        this.typesOfPurchases.add(newType);
-//    }
-//
-//    public ArrayList<String> getTypesOfPurchases() {
-//        return typesOfPurchases;
-//    }
-//
-//    public void setTypesOfPurchases(ArrayList<String> typesOfPurchases) {
-//        this.typesOfPurchases = typesOfPurchases;
-//    }
-//    public String get(int i){
-//        return typesOfPurchases.get(i);
-//    }
-//
-//    public TypesOfPurchases(Context context) {
-//        sPref = context.getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE);
-//
-//    }
-//
-//
-//
-//    public void save(){
-//       // sPref = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-//
-//        SharedPreferences.Editor editor = sPref.edit();
-//        try {
-//            editor.putString("typesOfPurchases", ObjectSerializer.serialize(typesOfPurchases));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        editor.apply();
-//    }
-//    public void load(){
-//      // sPref = getSharedPreferences(PREFERENCE_NAME,MODE_PRIVATE);
-//        try {
-//            typesOfPurchases = ( ArrayList<String>) ObjectSerializer.deserialize(sPref.getString(PREFERENCE_NAME, ObjectSerializer.serialize(new ArrayList<String>())));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-   // }
+
 }

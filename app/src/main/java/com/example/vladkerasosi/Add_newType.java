@@ -1,80 +1,78 @@
 package com.example.vladkerasosi;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import Data.AppDatabase;
+import Model.Purchases;
+import Model.TypeOfProfit;
 import Model.TypesOfPurchases;
 
 public class Add_newType extends AppCompatActivity {
-    String typeOfactivity;
-    String newType="";
-    SharedPreferences sPref;
-    TypesOfPurchases typesOfPurchases=new TypesOfPurchases(this);
-//    ArrayList<String> typesOfPurchases;
+
+    private String typeOfactivity;
+    private AppDatabase appDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_type);
 
+        appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,"AppDB")
+                .allowMainThreadQueries()
+                .build();
+
     }
+
 
     @Override
     protected void onStart() {
         super.onStart();
-        typesOfPurchases.load();
+
         Bundle arguments = getIntent().getExtras();
         if(arguments!=null) {
             typeOfactivity=arguments.getString("typeOfactivity");
         }
     }
 
-//    public  void SaveTypesOfPurchases(){
-//        sPref = getSharedPreferences("typesOfPurchases",MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sPref.edit();
-//        try {
-//            editor.putString("typesOfPurchases", ObjectSerializer.serialize(typesOfPurchases));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        editor.apply();
-//    }
-//
-//    public void LoadTypesOfPurchases(){
-//        sPref = getSharedPreferences("typesOfPurchases",MODE_PRIVATE);
-//        try {
-//            typesOfPurchases = ( ArrayList<String>) ObjectSerializer.deserialize(sPref.getString("typesOfPurchases", ObjectSerializer.serialize(new ArrayList<String>())));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+    private void addNewTypeOfPurchases(String name){
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,name));
+    }
 
+    private void addNewTypeOfProfit(String name){
+        appDatabase.getPur_Pro_Dao().addTypeOfProfit(new TypeOfProfit(0,name));
+    }
 
 
     public void CreateNewType(View view)  {
 
         EditText editText=findViewById(R.id.editText5);
-        newType=editText.getText().toString();
+        String newType = editText.getText().toString();
 
-        if(typeOfactivity.equals("Purchases")){
-            Intent intent = new Intent(this, Add_new.class);
-            typesOfPurchases.add(newType);
-            typesOfPurchases.save();
-            startActivity(intent);
+        if(!TextUtils.isEmpty(editText.getText())) {
+
+        if(typeOfactivity.equals("purchases")){
+            addNewTypeOfPurchases(newType);
         }
 
-        if(typeOfactivity.equals("Profit")){
-            Intent intent = new Intent(this, Add_new_profit.class);
-//            intent.putExtra("newType",newType);
+        if(typeOfactivity.equals("profit")){
+            addNewTypeOfProfit(newType);
+
+        }
+            Intent intent = new Intent(this, Add_new.class);
             startActivity(intent);
+        }
+        else {
+            Toast.makeText(Add_newType.this, "Введите название новой категории!", Toast.LENGTH_SHORT).show();
         }
 
     }

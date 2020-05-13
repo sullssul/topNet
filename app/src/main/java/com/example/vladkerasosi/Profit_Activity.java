@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +26,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import Data.AppDatabase;
 import Model.Profit;
+import Model.TypeOfProfit;
+import Model.TypesOfPurchases;
 
 public class Profit_Activity extends AppCompatActivity {
 
@@ -32,10 +37,14 @@ public class Profit_Activity extends AppCompatActivity {
     RecyclerView.Adapter<Data_adapter_profit.ViewHolder> adapter;
     PieChart mPieChart;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<String> typesOfProfit=new ArrayList<String>();
-    ArrayList<Profit> profitArrayList=new ArrayList<Profit>();
-    HashMap<String,Float> piechartItem=new HashMap<String, Float>();
-    float Balance=0;
+
+    private ArrayList<TypeOfProfit> typesOfProfit=new ArrayList<>();
+    private ArrayList<Profit> profitArrayList=new ArrayList<Profit>();
+    private HashMap<String,Float> piechartItem=new HashMap<String, Float>();
+    private float Balance=0;
+
+    private AppDatabase appDatabase;
+
     SharedPreferences sPref;
 
 
@@ -45,32 +54,43 @@ public class Profit_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profit);
-        LoadBalance();
-        typesOfProfit.add("Зарплата");
-        typesOfProfit.add("Пенсия");
-        typesOfProfit.add("Стипендия");
-        typesOfProfit.add("Вклад");
-        typesOfProfit.add("Продажа вещей");
-        typesOfProfit.add("Другое");
-//        sPref = getPreferences(MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sPref.edit();
-//        editor.clear();
-//        editor.apply();
 
+        appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,"AppDB")
+                .allowMainThreadQueries()
+                .build();
+
+        profitArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllProfit());
+        typesOfProfit.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfProfit());
+        if(typesOfProfit.isEmpty()) firstStart();
+
+        for (TypeOfProfit type : typesOfProfit) {
+            Log.d("profit", "type: "+type.getType_profit_name() );
+        }
+
+
+
+    }
+
+    private void firstStart(){
+        appDatabase.getPur_Pro_Dao().addTypeOfProfit(new TypeOfProfit(0,"Зарплата"));
+        appDatabase.getPur_Pro_Dao().addTypeOfProfit(new TypeOfProfit(0,"Пенсия"));
+        appDatabase.getPur_Pro_Dao().addTypeOfProfit(new TypeOfProfit(0,"Стипендия"));
+        appDatabase.getPur_Pro_Dao().addTypeOfProfit(new TypeOfProfit(0,"Вклад"));
+        appDatabase.getPur_Pro_Dao().addTypeOfProfit(new TypeOfProfit(0,"Продажа вещей"));
+        appDatabase.getPur_Pro_Dao().addTypeOfProfit(new TypeOfProfit(0,"Другое"));
+        typesOfProfit.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfProfit());
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SaveArrayList();
         SaveBalance();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        SaveArrayList();
         SaveBalance();
     }
 
@@ -79,18 +99,8 @@ public class Profit_Activity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         LoadBalance();
-        LoadArrayList();
-
-        Bundle arguments = getIntent().getExtras();
-        if(arguments!=null){
-            if((Profit) getIntent().getSerializableExtra("profit")!=null)
-                profitArrayList.add((Profit) getIntent().getSerializableExtra("profit"));
-
-        //   Balance=arguments.getFloat("Balance");
-
-        }
         setRecyclerView();
-        setPiechartItem();
+        if(!profitArrayList.isEmpty())  setPiechartItem();
         setTextView();
     }
 
@@ -152,10 +162,11 @@ public class Profit_Activity extends AppCompatActivity {
         Random rand = new Random();
 
         for(int i=0;i<typesOfProfit.size();i++){
-            piechartItem.put(typesOfProfit.get(i), (float) 0);
+            piechartItem.put(typesOfProfit.get(i).getType_profit_name(), (float) 0);
         }
         for(int i=0;i<profitArrayList.size();i++){
-            piechartItem.put(profitArrayList.get(i).getTypeOfProfit(),piechartItem.get(profitArrayList.get(i).getTypeOfProfit()) +(float)profitArrayList.get(i).getSum());
+            String type=profitArrayList.get(i).getTypeOfProfitName();
+            piechartItem.put(type,piechartItem.get(type) +(float)profitArrayList.get(i).getSum());
         }
         for(HashMap.Entry<String, Float> item : piechartItem.entrySet()){
             float r = rand.nextFloat();
@@ -168,39 +179,15 @@ public class Profit_Activity extends AppCompatActivity {
     }
 
     public void tap_add_profit(View view) {
-        Intent intent = new Intent(this, Add_new_profit.class);
-        intent.putExtra("typesOfProfit",typesOfProfit);
-    //  = intent.putExtra("Balance",Balance);
+        Intent intent = new Intent(this, Add_new.class);
+        intent.putExtra("typeAdd","profit");
         startActivity(intent);
     }
 
     public void goToPurshases(View view) {
         Intent intent = new Intent(this, MainActivity.class);
-      //  intent.putExtra("Balance",Balance);
         startActivity(intent);
         overridePendingTransition(R.anim.go_prev_in, R.anim.go_prev_out);
-    }
-
-    public void SaveArrayList(){
-        sPref = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        try {
-            editor.putString("profitArrayList", ObjectSerializer.serialize(profitArrayList));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        editor.apply();
-    }
-
-    public void LoadArrayList(){
-        sPref = getPreferences(MODE_PRIVATE);
-        try {
-            profitArrayList = (ArrayList<Profit>) ObjectSerializer.deserialize(sPref.getString("profitArrayList", ObjectSerializer.serialize(new ArrayList<Profit>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     public void SaveBalance(){
