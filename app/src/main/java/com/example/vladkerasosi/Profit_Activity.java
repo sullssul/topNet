@@ -15,7 +15,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,36 +28,32 @@ import android.widget.Toast;
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 import Data.AppDatabase;
 import Model.Profit;
-import Model.Purchases;
+
 import Model.TypeOfProfit;
-import Model.TypesOfPurchases;
+
 
 
 public class Profit_Activity extends AppCompatActivity {
 
-    RecyclerView recyclerView;
-    Data_adapter_profit data_adapter_profit;
-    PieChart mPieChart;
-    RecyclerView.LayoutManager layoutManager;
+    private Data_adapter_profit data_adapter_profit;
 
     private ArrayList<TypeOfProfit> typesOfProfit=new ArrayList<>();
-    private ArrayList<Profit> profitArrayList=new ArrayList<Profit>();
-    private HashMap<String,Float> piechartItem=new HashMap<String, Float>();
+    private ArrayList<Profit> profitArrayList= new ArrayList<>();
+    private HashMap<String,Float> piechartItem= new HashMap<>();
     private float Balance=0;
 
     private ArrayList<String> types=new ArrayList<>();
-    ArrayAdapter<String> spinnerAdapter;
 
     private AppDatabase appDatabase;
 
-    SharedPreferences sPref;
+    private SharedPreferences sPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,17 +113,18 @@ public class Profit_Activity extends AppCompatActivity {
     public void editProfit(final Profit profit,final int position)
     {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
-        View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
+        @SuppressLint("InflateParams") View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
 
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(Profit_Activity.this);
         alertDialogBuilderUserInput.setView(view);
 
-        TextView titleTV = view.findViewById(R.id.titleTV);
+
         final EditText nameEditText = view.findViewById(R.id.nameEditText);
         final EditText priceEditText = view.findViewById(R.id.priceEditText);
         final EditText decriptionEditText=view.findViewById(R.id.descriptiontEdit);
         final EditText dateEditText=view.findViewById(R.id.dateEditText);
         final Spinner spinner=view.findViewById(R.id.spinerEdit);
+
         decriptionEditText.setVisibility(View.GONE);
 
         if(profit!=null){
@@ -137,7 +133,7 @@ public class Profit_Activity extends AppCompatActivity {
             dateEditText.setText(profit.getDate());
             convertToString();
 
-            spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
+            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(spinnerAdapter);
             for(int i=0;i<typesOfProfit.size();i++) {
@@ -279,10 +275,10 @@ public class Profit_Activity extends AppCompatActivity {
 //        }
 
     public void setRecyclerView(){
-        recyclerView = findViewById(R.id.recylerView);
+        RecyclerView recyclerView = findViewById(R.id.recylerView);
         recyclerView.setHasFixedSize(true);
         data_adapter_profit = new Data_adapter_profit(profitArrayList, this,Profit_Activity.this);
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
         recyclerView.setAdapter(data_adapter_profit);
         recyclerView.setLayoutManager(layoutManager);
@@ -297,7 +293,7 @@ public class Profit_Activity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setPiechartItem(){
 
-         mPieChart = (PieChart) findViewById(R.id.piechart);
+        PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
          mPieChart.clearChart();
         Random rand = new Random();
 

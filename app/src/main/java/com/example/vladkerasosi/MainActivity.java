@@ -33,7 +33,6 @@ import android.widget.Toast;
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -49,10 +48,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
     private DataAdapter dataAdapter;
 
-    private ArrayList<TypesOfPurchases> typesOfPurchases=new ArrayList<TypesOfPurchases>();
-    private ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
-    private HashMap<String,Float> piechartItem=new HashMap<String, Float>();
-    private PieChart mPieChart;
+    private ArrayList<TypesOfPurchases> typesOfPurchases= new ArrayList<>();
+    private ArrayList<Purchases> purchasesArrayList= new ArrayList<>();
+    private HashMap<String,Float> piechartItem= new HashMap<>();
 
     private AppDatabase appDatabase;
     private float Balance=0;
@@ -136,12 +134,17 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
         alertDialogBuilderUserInput.setView(view);
 
-        TextView titleTV = view.findViewById(R.id.titleTV);
+       // TextView titleTV = view.findViewById(R.id.titleTV);
          final EditText nameEditText = view.findViewById(R.id.nameEditText);
          final EditText priceEditText = view.findViewById(R.id.priceEditText);
          final EditText decriptionEditText=view.findViewById(R.id.descriptiontEdit);
          final EditText dateEditText=view.findViewById(R.id.dateEditText);
          final Spinner spinner=view.findViewById(R.id.spinerEdit);
+
+        priceEditText.setVisibility(View.VISIBLE);
+        decriptionEditText.setVisibility(View.VISIBLE);
+        dateEditText.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.VISIBLE);
 
         if(purchases!=null){
              nameEditText.setText(purchases.getName());
@@ -333,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setPiechartItem(){
 
-        mPieChart = (PieChart) findViewById(R.id.piechart);
+        PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
         mPieChart.clearChart();
         Random rand = new Random();
 

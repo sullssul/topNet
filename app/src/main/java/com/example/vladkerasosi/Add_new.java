@@ -57,12 +57,22 @@ public class Add_new extends AppCompatActivity  {
         appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,"AppDB")
                 .allowMainThreadQueries()
                 .build();
-        typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
-        typeOfProfits.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfProfit());
+
 
 
     }
+    private void loadData(){
 
+        if(typeAdd.equals("profit")) {
+            typeOfProfits.clear();
+            typeOfProfits.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfProfit());
+        }
+
+        if(typeAdd.equals("purchases")){
+            typesOfPurchases.clear();
+            typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -84,6 +94,7 @@ public class Add_new extends AppCompatActivity  {
         if(arguments!=null) {
             typeAdd=arguments.getString("typeAdd");
         }
+        loadData();
 
         if(typeAdd.equals("purchases")){
             textView.setVisibility(View.VISIBLE);
@@ -102,6 +113,8 @@ public class Add_new extends AppCompatActivity  {
     }
 
     private void convertToString(){
+
+        types.clear();
         if(typeAdd.equals("purchases")) {
             for (TypesOfPurchases typePurchases : typesOfPurchases) {
                 types.add(typePurchases.getType_name_purchases());

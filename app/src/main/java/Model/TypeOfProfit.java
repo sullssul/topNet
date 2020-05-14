@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "profit_types_table")
-public class TypeOfProfit {
+public class TypeOfProfit  {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="type_profit_id")

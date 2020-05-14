@@ -1,20 +1,13 @@
 package Model;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.vladkerasosi.ObjectSerializer;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 @Entity(tableName = "purchases_types_table")
-public class TypesOfPurchases  {
+public class TypesOfPurchases   {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="type_purchases_id")
