@@ -67,9 +67,6 @@ public class MainActivity extends AppCompatActivity {
     // Идентификатор уведомления
     private static final int NOTIFY_ID = 101;
 
-    // Идентификатор канала
-    private static String CHANNEL_ID = "lol_channel";
-
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -280,16 +277,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void showNotif(){
         // Идентификатор канала
+        // Идентификатор канала
+        String CHANNEL_ID = "lol_channel";
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_attach_money_black_24dp)
-                        .setContentTitle("Напоминание")
-                        .setContentText("Пора покормить кота")
+                        .setContentTitle("Превышен лимит")
+                        .setContentText("Превышен ежемясяный бюджет, сократите расходы!")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(MainActivity.this);
         notificationManager.notify(NOTIFY_ID, builder.build());
+
+        Toast toast = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            toast = Toast.makeText(MainActivity.this, "Превышен ежемесячный бюджет", Toast.LENGTH_LONG);
+        }
+        toast.show();
     }
 
     public  void setDarkMode(){

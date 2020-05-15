@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.view.LayoutInflater;
@@ -29,7 +28,7 @@ import androidx.annotation.RequiresApi;
 
 import androidx.appcompat.app.AlertDialog;
 
-import androidx.appcompat.app.AppCompatDelegate;
+
 import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
@@ -55,11 +54,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private AppDatabase appDatabase;
     private Context context;
     private Settings_Activity settings_activity;
-    private  SharedPreferences sPrefSettings;
 
 
-
-    @SuppressLint("ValidFragment")
+             @SuppressLint("ValidFragment")
     public SettingsFragment(Context context, Settings_Activity settings_activity) {
         this.context = context;
         this.settings_activity = settings_activity;
@@ -73,15 +70,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 .allowMainThreadQueries()
                 .build();
 
-        sPrefSettings = PreferenceManager.getDefaultSharedPreferences(context);
+//        SharedPreferences sPrefSettings = PreferenceManager.getDefaultSharedPreferences(context);
+
         purchasesArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllPurchases());
         typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
         profitArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllProfit());
         typesOfProfit.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfProfit());
 
-        SharedPreferences sharedPreferences = getPreferenceScreen()
-                .getSharedPreferences();
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         PreferenceScreen preferenceScreen = getPreferenceScreen();
+
         int count = preferenceScreen.getPreferenceCount();
 
         for (int i = 0; i < count; i++) {
@@ -137,6 +135,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @SuppressLint("ShowToast")
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
         Preference preference = findPreference(key);
         if (!(preference instanceof SwitchPreference)) {
             String value = sharedPreferences.getString(preference.getKey(), "");
