@@ -275,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("ShowToast")
     public void showNotif(){
         // Идентификатор канала
         // Идентификатор канала
