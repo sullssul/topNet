@@ -32,12 +32,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Random;
 
 import Data.AppDatabase;
@@ -63,10 +63,12 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sPref;
     private  SharedPreferences sPrefSettings;
-    private float totalSum=0;
-    private float Limit=0;
 
+    // Идентификатор уведомления
     private static final int NOTIFY_ID = 101;
+
+    // Идентификатор канала
+    private static String CHANNEL_ID = "lol_channel";
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -121,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         setRecyclerView();
         setPiechartItem();
         setTextView();
+        checkLimit();
     }
 
     private void convertToString(){
@@ -258,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter.notifyDataSetChanged();
         setPiechartItem();
         setTextView();
+        checkLimit();
 
     }
 
@@ -270,17 +274,17 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter.notifyDataSetChanged();
         setPiechartItem();
         setTextView();
+        checkLimit();
 
     }
 
     public void showNotif(){
         // Идентификатор канала
-        String CHANNEL_ID = "Kera lox";
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_attach_money_black_24dp)
-                        .setContentTitle("Превышение лимита")
-                        .setContentText("Вы превысели ежемесяный лимит в "+ Limit)
+                        .setContentTitle("Напоминание")
+                        .setContentText("Пора покормить кота")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager =
@@ -299,9 +303,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void CheckLimit(){
-        if(totalSum>=Limit){
-            showNotif();
+    public void checkLimit(){
+        if(sPrefSettings.getBoolean("Notify",false)) {
+            float limit = Float.parseFloat(sPrefSettings.getString("Limit", "50000"));
+            float totalSum = 0;
+            for (Purchases purchases : purchasesArrayList) {
+                totalSum += purchases.getSum();
+            }
+            if (totalSum > limit) {
+                showNotif();
+            }
         }
     }
 

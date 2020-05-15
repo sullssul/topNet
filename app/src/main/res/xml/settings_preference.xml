@@ -18,7 +18,7 @@
         android:key="Notify"
         android:title="Уведомлять о превышении лимита"
         android:summaryOff="Уведмоления выключены"
-        android:summaryOn="Ночной режим включен"
+        android:summaryOn="Уведмоления включены"
 
         />
 

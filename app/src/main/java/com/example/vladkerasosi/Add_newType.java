@@ -148,7 +148,6 @@ public class Add_newType extends AppCompatActivity {
             }
 
             final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
-            Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawableResource(R.color.backgroundDialog);
             alertDialog.show();
 
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
