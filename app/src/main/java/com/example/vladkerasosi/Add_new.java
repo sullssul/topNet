@@ -2,6 +2,7 @@ package com.example.vladkerasosi;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.room.Room;
 
 import android.content.Intent;
@@ -28,18 +29,20 @@ import Model.Purchases;
 import Model.TypeOfProfit;
 import Model.TypesOfPurchases;
 
+import static android.app.UiModeManager.MODE_NIGHT_YES;
+
 public class Add_new extends AppCompatActivity  {
 
 
-    ArrayAdapter<String> spinnerAdapter;
-    Spinner spinner;
+    private Spinner spinner;
     private AppDatabase appDatabase;
     private ArrayList<TypesOfPurchases> typesOfPurchases=new ArrayList<>();
     private ArrayList<TypeOfProfit> typeOfProfits=new ArrayList<>();
     private ArrayList<String> types=new ArrayList<>();
     private float Balance;
     private String typeAdd;
-    SharedPreferences sPref;
+    private SharedPreferences sPref;
+    private ActionBar actionBar;
 
     Date currentDate = new Date();
     DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
@@ -49,10 +52,11 @@ public class Add_new extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new);
-        ActionBar actionBar =getSupportActionBar();
+        actionBar =getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Добавление новой записи");
+
+
 
         appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,"AppDB")
                 .allowMainThreadQueries()
@@ -84,6 +88,18 @@ public class Add_new extends AppCompatActivity  {
         }
     }
 
+    private void settitle(){
+        if(typeAdd.equals("profit")) {
+            actionBar.setTitle("Добавление нового дохода");
+        }
+
+        if(typeAdd.equals("purchases")){
+            actionBar.setTitle("Добавление нового расхода");
+        }
+
+    }
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -94,6 +110,8 @@ public class Add_new extends AppCompatActivity  {
         if(arguments!=null) {
             typeAdd=arguments.getString("typeAdd");
         }
+
+        settitle();
         loadData();
 
         if(typeAdd.equals("purchases")){
@@ -155,7 +173,7 @@ public class Add_new extends AppCompatActivity  {
 
     void createSpinner() {
         spinner = findViewById(R.id.type_spinner);
-        spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
     }

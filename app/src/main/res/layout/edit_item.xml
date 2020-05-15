@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="8dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#474444"
+    android:orientation="vertical"
+    android:padding="8dp">
 
-    <TextView android:id="@+id/titleTV"
+    <TextView
+        android:id="@+id/titleTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:lineSpacingExtra="10sp"
         android:text="Редактирование записи"
+        android:textColor="@android:color/secondary_text_light_nodisable"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -23,6 +25,7 @@
         android:background="@android:color/transparent"
         android:gravity="top"
         android:hint="Название"
+        android:textColor="@android:color/secondary_text_light_nodisable"
         android:textSize="24sp" />
 
     <EditText
@@ -32,8 +35,9 @@
         android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
         android:gravity="top"
-        android:inputType="number"
         android:hint="Сумма"
+        android:inputType="number"
+        android:textColor="@android:color/secondary_text_light_nodisable"
         android:textSize="24sp" />
 
     <EditText
@@ -44,6 +48,7 @@
         android:background="@android:color/transparent"
         android:gravity="top"
         android:hint="Заметка"
+        android:textColor="@android:color/secondary_text_light_nodisable"
         android:textSize="24sp" />
 
     <EditText
@@ -54,6 +59,7 @@
         android:background="@android:color/transparent"
         android:gravity="top"
         android:hint="Дата"
+        android:textColor="@android:color/secondary_text_light_nodisable"
         android:textSize="24sp" />
 
     <Spinner
@@ -63,8 +69,7 @@
         android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
         android:gravity="top"
-        android:textSize="24sp"
-        />
+        android:textSize="24sp" />
 
 
 </LinearLayout>

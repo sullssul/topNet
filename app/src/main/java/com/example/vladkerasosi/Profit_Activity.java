@@ -168,6 +168,7 @@ public class Profit_Activity extends AppCompatActivity {
 
 
         final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.color.backgroundDialog);
         alertDialog.show();
 
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -219,6 +220,7 @@ public class Profit_Activity extends AppCompatActivity {
 
         profit.setDate(date);
         profit.setName(name);
+        profit.setSum(sum);
         profit.setTypeOfProfit(typeOfProfit);
 
         appDatabase.getPur_Pro_Dao().updateProfit(profit);
@@ -293,6 +295,7 @@ public class Profit_Activity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setPiechartItem(){
 
+        piechartItem.clear();
         PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
          mPieChart.clearChart();
         Random rand = new Random();

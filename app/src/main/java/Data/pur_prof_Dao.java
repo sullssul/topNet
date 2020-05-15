@@ -32,7 +32,7 @@ public interface pur_prof_Dao {
     public  Purchases getPurchases(long purId);
 
     @Insert
-    long addTypeOfPurchases(TypesOfPurchases typesOfPurchases);
+    public long addTypeOfPurchases(TypesOfPurchases typesOfPurchases);
 
     @Update
     public void updateTypeOfPurchases(TypesOfPurchases typesOfPurchases);
@@ -62,7 +62,7 @@ public interface pur_prof_Dao {
     public  Profit getProfit(long profId);
 
     @Insert
-    long addTypeOfProfit(TypeOfProfit typeOfProfit);
+    public long addTypeOfProfit(TypeOfProfit typeOfProfit);
 
     @Update
     public void updateTypeOfProfit( TypeOfProfit typeOfProfit);

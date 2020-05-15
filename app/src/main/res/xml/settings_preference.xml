@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+
+>
+    <SwitchPreference
+
+        android:defaultValue="false"
+        android:key="DarkMode"
+        android:title="Ночной режим"
+        android:summaryOff="Ночной режим выключен"
+        android:summaryOn="Ночной режим включен"
+
+        />
+
+    <SwitchPreference
+
+        android:defaultValue="false"
+        android:key="Notify"
+        android:title="Уведомлять о превышении лимита"
+        android:summaryOff="Уведмоления выключены"
+        android:summaryOn="Ночной режим включен"
+
+        />
+
+    <EditTextPreference
+
+        android:title="Ежемесячный бюджет"
+        android:key="Limit"
+        android:defaultValue="15000"
+        />
+
+
+
+</PreferenceScreen>

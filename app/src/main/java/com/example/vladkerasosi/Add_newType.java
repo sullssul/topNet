@@ -8,7 +8,6 @@ import androidx.room.Room;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -25,6 +24,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import Data.AppDatabase;
+import Model.Profit;
 import Model.Purchases;
 import Model.TypeOfProfit;
 import Model.TypesOfPurchases;
@@ -34,11 +34,15 @@ public class Add_newType extends AppCompatActivity {
     private String typeOfactivity;
     private AppDatabase appDatabase;
     private ArrayList<TypesOfPurchases> typesOfPurchases= new ArrayList<>();
+    private ArrayList<Purchases> purchasesArrayList= new ArrayList<>();
     private ArrayList<TypeOfProfit> typesOfProfit=new ArrayList<>();
+    private ArrayList<Profit> profitArrayList= new ArrayList<>();
     private ArrayList<String> types=new ArrayList<>();
     private ListView listView;
     private  ArrayAdapter<String> adapter;
-    private AdapterView<?> parent;
+    private TypeOfProfit defTypeProfit;
+    private TypesOfPurchases defTypePurchases;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +60,28 @@ public class Add_newType extends AppCompatActivity {
 
 
     }
+    private void setDefType(){
 
-    private void editType(AdapterView<?> parent, View viewww, final int position, long id, final Boolean isUpdate){
+        if(typeOfactivity.equals("profit")) {
+            for(TypeOfProfit typeOfProfit: typesOfProfit){
+                if(typeOfProfit.getType_profit_name().equals("Другое")){
+                    defTypeProfit=typeOfProfit;
+                }
+            }
+
+        }
+
+        if(typeOfactivity.equals("purchases")){
+            for(TypesOfPurchases typeOfPur: typesOfPurchases){
+                if(typeOfPur.getType_name_purchases().equals("Другое")){
+                    defTypePurchases=typeOfPur;
+                }
+            }
+        }
+
+    }
+
+    private void editType(final int position, long id, final Boolean isUpdate){
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
         @SuppressLint("InflateParams") View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
 
@@ -72,27 +96,33 @@ public class Add_newType extends AppCompatActivity {
         final EditText dateEditText=view.findViewById(R.id.dateEditText);
         final Spinner spinner=view.findViewById(R.id.spinerEdit);
 
-        if((!types.isEmpty())&&isUpdate)
-        nameEditText.setText(types.get(position));
+        if((!types.isEmpty())&&isUpdate)  nameEditText.setText(types.get(position));
         priceEditText.setVisibility(View.GONE);
         decriptionEditText.setVisibility(View.GONE);
         dateEditText.setVisibility(View.GONE);
         spinner.setVisibility(View.GONE);
 
+        if((!types.isEmpty())&&isUpdate){
+            if(types.get(position).equals("Другое")){
+                nameEditText.setEnabled(false);
+            }
+        }
+
 
         if(!types.isEmpty()){
+            if(!(nameEditText.getText().toString().equals("Другое")))
             alertDialogBuilderUserInput.setCancelable(true)
                     .setPositiveButton(isUpdate ? "Обновить" : "Добавить", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
                         }
-                    })
-                    .setNegativeButton(isUpdate ? "Удалить" : "Отмена", new DialogInterface.OnClickListener() {
+                    });
+            alertDialogBuilderUserInput.setNegativeButton(isUpdate&& !(nameEditText.getText().toString().equals("Другое")) ? "Удалить" : "Отмена", new DialogInterface.OnClickListener() {
                         @RequiresApi(api = Build.VERSION_CODES.O)
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (isUpdate) {
+                            if (isUpdate&& !(nameEditText.getText().toString().equals("Другое"))) {
 
                                 deleteType(position);
 
@@ -105,7 +135,7 @@ public class Add_newType extends AppCompatActivity {
                         }
                     } );
 
-            if(isUpdate) {
+            if(isUpdate && !(nameEditText.getText().toString().equals("Другое"))) {
                 alertDialogBuilderUserInput.setNeutralButton("Отмена", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,
                                         int id) {
@@ -115,6 +145,7 @@ public class Add_newType extends AppCompatActivity {
             }
 
             final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+            alertDialog.getWindow().setBackgroundDrawableResource(R.color.backgroundDialog);
             alertDialog.show();
 
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -124,6 +155,10 @@ public class Add_newType extends AppCompatActivity {
 
                     if (TextUtils.isEmpty(nameEditText.getText().toString())) {
                         Toast.makeText(Add_newType.this, "Введите название Категории!", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else
+                    if (nameEditText.getText().toString().equals("Другое")) {
+                        Toast.makeText(Add_newType.this, "Введите другое название категории!", Toast.LENGTH_SHORT).show();
                         return;
                     } else{
                         alertDialog.dismiss();
@@ -150,18 +185,22 @@ public class Add_newType extends AppCompatActivity {
 
         if(typeOfactivity.equals("profit")) {
             typesOfProfit.clear();
+            profitArrayList.clear();
+            profitArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllProfit());
             typesOfProfit.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfProfit());
         }
 
         if(typeOfactivity.equals("purchases")){
             typesOfPurchases.clear();
+            purchasesArrayList.clear();
+            purchasesArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllPurchases());
             typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
          }
     }
 
     private void setListView(){
         listView=findViewById(R.id.ListView);
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,types);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, types);
         listView.setAdapter(adapter);
     }
 
@@ -201,11 +240,12 @@ public class Add_newType extends AppCompatActivity {
 
         loadData();
         convertToString();
+        setDefType();
         setListView();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                editType(parent,view,position,id,true);
+                editType(position,id,true);
 
             }
         });
@@ -232,12 +272,31 @@ public class Add_newType extends AppCompatActivity {
     private void deleteType(int position){
         if(typeOfactivity.equals("profit")) {
             TypeOfProfit typeOfProfit=typesOfProfit.get(position);
+
+            for(Profit profit: profitArrayList){
+
+                if(typeOfProfit.getType_profit_name().equals(profit.getTypeOfProfitName())){
+                    profit.setTypeOfProfit(defTypeProfit);
+                    appDatabase.getPur_Pro_Dao().updateProfit(profit);
+                }
+
+            }
+
             appDatabase.getPur_Pro_Dao().deleteTypeOfProfit(typeOfProfit);
             typesOfProfit.remove(position);
 
         }
         if(typeOfactivity.equals("purchases")){
             TypesOfPurchases typeOfPur=typesOfPurchases.get(position);
+
+            for(Purchases purchases: purchasesArrayList){
+
+                if(typeOfPur.getType_name_purchases().equals(purchases.getTypesOfPurchasesName())){
+                    purchases.setTypesOfPurchases(defTypePurchases);
+                    appDatabase.getPur_Pro_Dao().updatePurchases(purchases);
+                }
+
+            }
             appDatabase.getPur_Pro_Dao().deleteTypeOfPurchases(typeOfPur);
             typesOfPurchases.remove(position);
 
@@ -252,19 +311,44 @@ public class Add_newType extends AppCompatActivity {
 
         if(typeOfactivity.equals("profit")){
             TypeOfProfit typeOfProfit= typesOfProfit.get(position);
+            TypeOfProfit oldTypeOfProfit= typesOfProfit.get(position);
+
             typeOfProfit.setType_profit_name(name);
             appDatabase.getPur_Pro_Dao().updateTypeOfProfit(typeOfProfit);
             typesOfProfit.set(position,typeOfProfit);
             types.set(position,typeOfProfit.getType_profit_name());
+
+            for(Profit profit:profitArrayList){
+                if(profit.getTypeOfProfitName().equals(oldTypeOfProfit.getType_profit_name())){
+                    profit.setTypeOfProfit(typeOfProfit);
+                    appDatabase.getPur_Pro_Dao().updateProfit(profit);
+                }
+            }
+
+
 
         }
 
         if(typeOfactivity.equals("purchases")){
-            TypeOfProfit typeOfProfit= typesOfProfit.get(position);
-            typeOfProfit.setType_profit_name(name);
-            appDatabase.getPur_Pro_Dao().updateTypeOfProfit(typeOfProfit);
-            typesOfProfit.set(position,typeOfProfit);
-            types.set(position,typeOfProfit.getType_profit_name());
+
+            TypesOfPurchases typeOfPur= typesOfPurchases.get(position);
+            TypesOfPurchases oldTypeOfPur= typesOfPurchases.get(position);
+
+            typeOfPur.setType_name_purchases(name);
+            appDatabase.getPur_Pro_Dao().updateTypeOfPurchases(typeOfPur);
+            typesOfPurchases.set(position,typeOfPur);
+            types.set(position,typeOfPur.getType_name_purchases());
+
+            for(Purchases purchases:purchasesArrayList){
+                if(purchases.getTypesOfPurchasesName().equals(oldTypeOfPur.getType_name_purchases())){
+                    purchases.setTypesOfPurchases(typeOfPur);
+                    appDatabase.getPur_Pro_Dao().updatePurchases(purchases);
+                }
+            }
+
+
+
+
 
         }
 
@@ -277,7 +361,7 @@ public class Add_newType extends AppCompatActivity {
 
 
     public void CreateNewType(View view)  {
-        editType(null,null,-1,-1,false);
+        editType(-1,-1,false);
 
     }
 }

@@ -1,10 +1,13 @@
 package com.example.vladkerasosi;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.room.Room;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -20,163 +23,52 @@ import Model.TypeOfProfit;
 import Model.TypesOfPurchases;
 
 
-public class Settings_Activity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
-    float Limit = 0;
-    SharedPreferences sPref;
-    Boolean NotifLimit;
-    AppDatabase appDatabase;
-    private ArrayList<TypesOfPurchases> typesOfPurchases=new ArrayList<TypesOfPurchases>();
-    private ArrayList<Purchases> purchasesArrayList=new ArrayList<Purchases>();
-    private ArrayList<TypeOfProfit> typesOfProfit=new ArrayList<>();
-    private ArrayList<Profit> profitArrayList=new ArrayList<Profit>();
+public class Settings_Activity extends AppCompatActivity  {
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Switch sw = findViewById(R.id.limit_switch);
-        sw.setOnCheckedChangeListener(this);
+        ActionBar actionBar =getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Настройки");
 
-         appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "AppDB")
-                .allowMainThreadQueries()
-                .build();
-        purchasesArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllPurchases());
-        typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
-        profitArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllProfit());
-        typesOfProfit.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfProfit());
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingsFragment(getApplicationContext(),Settings_Activity.this)).commit();
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        Switch sw = findViewById(R.id.limit_switch);
-
-//      Switch swDarkMode=findViewById(R.id.dark_mode);
-//      swDarkMode.setChecked(true);
-//        swDarkMode.setOnCheckedChangeListener(this);
-        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    enambledEditText(true);
-                    NotifLimit = true;
-                    SaveNotifLimit();
-
-                }
-                if (!isChecked) {
-                    enambledEditText(false);
-                    NotifLimit = false;
-                    SaveNotifLimit();
-                }
-            }
-        });
-        EditText editText = findViewById(R.id.editText);
-        LoadNotifLimit();
-        if (NotifLimit) {
-            sw.setChecked(true);
-            editText.setEnabled(true);
-        } else {
-            sw.setChecked(false);
-            editText.setEnabled(false);
-        }
-
-        LoadLimit();
-        setEditText();
-    }
-
-    public void setEditText() {
-        EditText editText = findViewById(R.id.editText);
-        editText.setText(Limit + "");
-    }
-
-    public void setLimit() {
-        EditText editText = findViewById(R.id.editText);
-        Limit = Float.parseFloat(String.valueOf(editText.getText()));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        setLimit();
-        SaveLimit();
-
-        //   SaveNotifLimit();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        setLimit();
-        SaveLimit();
-
-        //    SaveNotifLimit();
-    }
-
-    public void SaveNotifLimit() {
-
-        sPref = getSharedPreferences("NotifLimit", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putBoolean("NotifLimit", NotifLimit);
-        editor.apply();
-    }
-
-    public void LoadNotifLimit() {
-        sPref = getSharedPreferences("NotifLimit", MODE_PRIVATE);
-        NotifLimit = sPref.getBoolean("NotifLimit", true);
-    }
-
-    public void SaveLimit() {
-
-        sPref = getSharedPreferences("Limit", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putFloat("Limit", Limit);
-        editor.apply();
-    }
-
-    public void LoadLimit() {
-        sPref = getSharedPreferences("Limit", MODE_PRIVATE);
-        Limit = sPref.getFloat("Limit", 0);
-    }
-
-    public void enambledEditText(boolean lol) {
-        EditText editText = findViewById(R.id.editText);
-        editText.setEnabled(lol);
-    }
 
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        };
 
-    }
 
-    public void ClearData(View view) {
-        sPref = getSharedPreferences("Balance", MODE_PRIVATE);
-      SharedPreferences.Editor editor = sPref.edit();
-        editor.clear();
-        editor.apply();
 
-        for(Purchases purchases:purchasesArrayList){
-            appDatabase.getPur_Pro_Dao().deletePurchases(purchases);
-        }
 
-        for(Profit profit:profitArrayList){
-            appDatabase.getPur_Pro_Dao().deleteProfit(profit);
-        }
-    }
 
-    public void deletePurTypes(View view) {
-        for(TypesOfPurchases tpPur: typesOfPurchases){
-            appDatabase.getPur_Pro_Dao().deleteTypeOfPurchases(tpPur);
-        }
-    }
 
-    public void deleteProfType(View view) {
-        for(TypeOfProfit tpProf: typesOfProfit){
-            appDatabase.getPur_Pro_Dao().deleteTypeOfProfit(tpProf);
-        }
-    }
+
+
+
+
+
+
+
 }

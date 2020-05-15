@@ -4,6 +4,7 @@ package com.example.vladkerasosi;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     private void loadData(){
         purchasesArrayList.clear();
         typesOfPurchases.clear();
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 //        if(NotifLimit)
 //            CheckLimit();
         setRecyclerView();
-        if(!purchasesArrayList.isEmpty()) setPiechartItem();
+  if(!purchasesArrayList.isEmpty()) setPiechartItem();
         setTextView();
     }
 
@@ -187,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
         final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.color.backgroundDialog);
         alertDialog.show();
 
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -336,9 +339,12 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setPiechartItem(){
 
+
         PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
         mPieChart.clearChart();
         Random rand = new Random();
+
+
 
         for(int i=0;i<typesOfPurchases.size();i++){
 
