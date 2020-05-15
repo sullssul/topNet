@@ -1,7 +1,10 @@
 package com.example.vladkerasosi;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +40,7 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
         holder.title.setText(title);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 profit_activity.editProfit(profit,position);

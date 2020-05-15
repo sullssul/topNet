@@ -6,14 +6,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<TypesOfPurchases> typesOfPurchases= new ArrayList<>();
     private ArrayList<Purchases> purchasesArrayList= new ArrayList<>();
     private HashMap<String,Float> piechartItem= new HashMap<>();
+    private NotificationManager notifManager;
+
+
 
     private AppDatabase appDatabase;
     private float Balance=0;
@@ -67,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private  SharedPreferences sPrefSettings;
 
     // Идентификатор уведомления
-    private static final int NOTIFY_ID = 101;
+
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -278,20 +283,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ShowToast")
-    public void showNotify(){
-        // Идентификатор канала
-        // Идентификатор канала
-        String CHANNEL_ID = "lol_channel";
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_attach_money_black_24dp)
-                        .setContentTitle("Превышен лимит")
-                        .setContentText("Превышен ежемясяный бюджет, сократите расходы!");
-        Notification notification = builder.build();
+    public void showNotify(String Title,String bigText,String smallText){
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1,notification);
+        final int NOTIFY_ID = 0; // ID of notification
+        String id = "LoL";
+        String title ="kek";
+
+        Intent intent;
+        PendingIntent pendingIntent;
+        NotificationCompat.Builder builder;
+        if (notifManager == null) {
+            notifManager = (NotificationManager)this.getSystemService(NOTIFICATION_SERVICE);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+            if (mChannel == null) {
+                mChannel = new NotificationChannel(id, title, importance);
+                mChannel.enableVibration(true);
+                mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                notifManager.createNotificationChannel(mChannel);
+            }
+            builder = new NotificationCompat.Builder(this, id);
+            intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            builder.setContentTitle(Title)                            // required
+                    .setSmallIcon(R.drawable.ic_attach_money_black_24dp)   // required
+                    .setContentText(smallText) // required
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(bigText))
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        }
+        else {
+            builder = new NotificationCompat.Builder(this, id);
+            intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            builder.setContentTitle(Title)                            // required
+                    .setSmallIcon(R.drawable.ic_attach_money_black_24dp)   // required
+                    .setContentText(smallText) // required
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(bigText))
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
+                    .setPriority(Notification.PRIORITY_HIGH);
+        }
+        Notification notification = builder.build();
+        notifManager.notify(NOTIFY_ID, notification);
 
         Toast toast = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -300,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
         toast.show();
     }
 
-    public  void setDarkMode(){
+    private   void setDarkMode(){
         if(sPrefSettings.getBoolean("DarkMode",false)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
@@ -311,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void checkLimit(){
+    private void checkLimit(){
         if(sPrefSettings.getBoolean("Notify",false)) {
             float limit = Float.parseFloat(sPrefSettings.getString("Limit", "50000"));
             float totalSum = 0;
@@ -319,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
                 totalSum += purchases.getSum();
             }
             if (totalSum > limit) {
-                showNotify();
+                showNotify("Превышен ежемясяный бюджет!","Постарайтесь сократить ваши расходы!","Сократите доходы!");
             }
         }
     }
