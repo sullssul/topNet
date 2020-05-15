@@ -55,9 +55,6 @@ public class Profit implements Serializable {
         this.typeOfProfit = typeOfProfit;
     }
 
-    @Ignore
-    public Profit(){}
-
     public String getDate() {
         return date;
     }

@@ -4,7 +4,6 @@ package com.example.vladkerasosi;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +35,7 @@ import org.eazegraph.lib.models.PieModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
 import Data.AppDatabase;
@@ -57,9 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private float Balance=0;
 
     private ArrayList<String> types=new ArrayList<>();
-    ArrayAdapter<String> spinnerAdapter;
 
-    SharedPreferences sPref;
+    private SharedPreferences sPref;
     private float totalSum=0;
     private float Limit=0;
 
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 //        if(NotifLimit)
 //            CheckLimit();
         setRecyclerView();
-  if(!purchasesArrayList.isEmpty()) setPiechartItem();
+        setPiechartItem();
         setTextView();
     }
 
@@ -129,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void editPurchases(final Purchases purchases,final int position)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void editPurchases(final Purchases purchases, final int position)
     {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
         @SuppressLint("InflateParams") View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
@@ -149,49 +149,49 @@ public class MainActivity extends AppCompatActivity {
         dateEditText.setVisibility(View.VISIBLE);
         spinner.setVisibility(View.VISIBLE);
 
-        if(purchases!=null){
-             nameEditText.setText(purchases.getName());
-            priceEditText.setText(String.valueOf(purchases.getSum()) );
+        if(purchases!=null) {
+            nameEditText.setText(purchases.getName());
+            priceEditText.setText(String.valueOf(purchases.getSum()));
             decriptionEditText.setText(purchases.getDescription());
             dateEditText.setText(purchases.getData());
 
             convertToString();
 
-            spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
+            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(spinnerAdapter);
-            for(int i=0;i<typesOfPurchases.size();i++) {
-                if(typesOfPurchases.get(i).equals(purchases.getTypesOfPurchasesName())){
+            for (int i = 0; i < typesOfPurchases.size(); i++) {
+                if (typesOfPurchases.get(i).equals(purchases.getTypesOfPurchasesName())) {
                     spinner.setSelection(i);
                 }
             }
 
+
+            alertDialogBuilderUserInput.setCancelable(true)
+                    .setPositiveButton("Обновить", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setNegativeButton("Удалить", new DialogInterface.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.O)
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deletePurchases(purchases, position);
+
+                        }
+                    })
+                    .setNeutralButton("Отмена", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int id) {
+                            dialog.cancel();
+                        }
+                    });
         }
 
-        alertDialogBuilderUserInput.setCancelable(true)
-                .setPositiveButton("Обновить", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setNegativeButton("Удалить", new DialogInterface.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deletePurchases(purchases, position);
-
-                    }
-                })
-                .setNeutralButton("Отмена",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int id) {
-                        dialog.cancel();
-                    }
-                });
-
         final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(R.color.backgroundDialog);
+        Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawableResource(R.color.backgroundDialog);
         alertDialog.show();
 
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
     public void setRecyclerView(){
         recyclerView = findViewById(R.id.recylerView);
         recyclerView.setHasFixedSize(true);
-        dataAdapter = new DataAdapter(purchasesArrayList, this,MainActivity.this);
+        dataAdapter = new DataAdapter(purchasesArrayList, MainActivity.this);
         layoutManager = new LinearLayoutManager(this);
 
         recyclerView.setAdapter(dataAdapter);
@@ -337,30 +337,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setPiechartItem();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void setPiechartItem(){
 
-
-        PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
+        piechartItem.clear();
+        PieChart mPieChart = findViewById(R.id.piechart);
         mPieChart.clearChart();
-        Random rand = new Random();
 
+        if(!purchasesArrayList.isEmpty()) {
 
+            Random rand = new Random();
 
-        for(int i=0;i<typesOfPurchases.size();i++){
+            for (int i = 0; i < typesOfPurchases.size(); i++) {
 
-            piechartItem.put(typesOfPurchases.get(i).getType_name_purchases(), (float) 0);
-        }
-        for(int i=0;i<purchasesArrayList.size();i++){
+                piechartItem.put(typesOfPurchases.get(i).getType_name_purchases(), (float) 0);
+            }
+            for (int i = 0; i < purchasesArrayList.size(); i++) {
 
-            String type=purchasesArrayList.get(i).getTypesOfPurchasesName();
-            piechartItem.put(type,piechartItem.get(type)+(float)purchasesArrayList.get(i).getSum());
-        }
-        for(HashMap.Entry<String, Float> item : piechartItem.entrySet()){
-            float r = rand.nextFloat();
-            float g = rand.nextFloat();
-            float b = rand.nextFloat();
-            mPieChart.addPieSlice(new PieModel(item.getKey(), item.getValue(), Color.rgb(r,g,b)));
+                String type = purchasesArrayList.get(i).getTypesOfPurchasesName();
+                try{
+                piechartItem.put(type, piechartItem.get(type) + purchasesArrayList.get(i).getSum());
+            } catch (NullPointerException e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                  }
+            }
+            for (HashMap.Entry<String, Float> item : piechartItem.entrySet()) {
+                float r = rand.nextFloat();
+                float g = rand.nextFloat();
+                float b = rand.nextFloat();
+               if( item.getValue()!=0)
+                mPieChart.addPieSlice(new PieModel(item.getKey(), item.getValue(), Color.rgb(r, g, b)));
 
+            }
         }
 
     }

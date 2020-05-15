@@ -95,7 +95,7 @@ public class Profit_Activity extends AppCompatActivity {
         loadData();
         LoadBalance();
         setRecyclerView();
-        if(!profitArrayList.isEmpty())  setPiechartItem();
+        setPiechartItem();
         setTextView();
     }
     @Override
@@ -127,45 +127,44 @@ public class Profit_Activity extends AppCompatActivity {
 
         decriptionEditText.setVisibility(View.GONE);
 
-        if(profit!=null){
+        if(profit!=null) {
             nameEditText.setText(profit.getName());
-            priceEditText.setText(String.valueOf(profit.getSum()) );
+            priceEditText.setText(String.valueOf(profit.getSum()));
             dateEditText.setText(profit.getDate());
             convertToString();
 
             ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(spinnerAdapter);
-            for(int i=0;i<typesOfProfit.size();i++) {
-                if(typesOfProfit.get(i).equals(profit.getTypeOfProfit())){
+            for (int i = 0; i < typesOfProfit.size(); i++) {
+                if (typesOfProfit.get(i).equals(profit.getTypeOfProfit())) {
                     spinner.setSelection(i);
                 }
             }
 
+
+            alertDialogBuilderUserInput.setCancelable(true)
+                    .setPositiveButton("Обновить", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setNegativeButton("Удалить", new DialogInterface.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.O)
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteProfit(profit, position);
+
+                        }
+                    })
+                    .setNeutralButton("Отмена", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int id) {
+                            dialog.cancel();
+                        }
+                    });
         }
-
-        alertDialogBuilderUserInput.setCancelable(true)
-                .setPositiveButton("Обновить", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setNegativeButton("Удалить", new DialogInterface.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteProfit(profit, position);
-
-                    }
-                })
-                .setNeutralButton("Отмена",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int id) {
-                        dialog.cancel();
-                    }
-                });
-
 
         final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
         alertDialog.getWindow().setBackgroundDrawableResource(R.color.backgroundDialog);
@@ -279,11 +278,18 @@ public class Profit_Activity extends AppCompatActivity {
     public void setRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.recylerView);
         recyclerView.setHasFixedSize(true);
-        data_adapter_profit = new Data_adapter_profit(profitArrayList, this,Profit_Activity.this);
+        data_adapter_profit = new Data_adapter_profit(profitArrayList,Profit_Activity.this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
         recyclerView.setAdapter(data_adapter_profit);
         recyclerView.setLayoutManager(layoutManager);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setPiechartItem();
     }
 
     @SuppressLint("SetTextI18n")
@@ -296,23 +302,31 @@ public class Profit_Activity extends AppCompatActivity {
     public void setPiechartItem(){
 
         piechartItem.clear();
-        PieChart mPieChart = (PieChart) findViewById(R.id.piechart);
-         mPieChart.clearChart();
-        Random rand = new Random();
+        PieChart mPieChart =  findViewById(R.id.piechart);
+        mPieChart.clearChart();
 
-        for(int i=0;i<typesOfProfit.size();i++){
-            piechartItem.put(typesOfProfit.get(i).getType_profit_name(), (float) 0);
-        }
-        for(int i=0;i<profitArrayList.size();i++){
-            String type=profitArrayList.get(i).getTypeOfProfitName();
-            piechartItem.put(type,piechartItem.get(type) +(float)profitArrayList.get(i).getSum());
-        }
-        for(HashMap.Entry<String, Float> item : piechartItem.entrySet()){
-            float r = rand.nextFloat();
-            float g = rand.nextFloat();
-            float b = rand.nextFloat();
-            mPieChart.addPieSlice(new PieModel(item.getKey(), item.getValue(), Color.rgb(r,g,b)));
+        if(!profitArrayList.isEmpty()) {
+            Random rand = new Random();
 
+            for (int i = 0; i < typesOfProfit.size(); i++) {
+                piechartItem.put(typesOfProfit.get(i).getType_profit_name(), (float) 0);
+            }
+            for (int i = 0; i < profitArrayList.size(); i++) {
+                String type = profitArrayList.get(i).getTypeOfProfitName();
+                try {
+                    piechartItem.put(type, piechartItem.get(type) +  profitArrayList.get(i).getSum());
+                } catch (NullPointerException e){
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+            for (HashMap.Entry<String, Float> item : piechartItem.entrySet()) {
+                float r = rand.nextFloat();
+                float g = rand.nextFloat();
+                float b = rand.nextFloat();
+                if( item.getValue()!=0)
+                    mPieChart.addPieSlice(new PieModel(item.getKey(), item.getValue(), Color.rgb(r, g, b)));
+
+            }
         }
 
     }

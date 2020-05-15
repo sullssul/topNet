@@ -3,15 +3,15 @@ package Model;
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
-import androidx.room.Ignore;
+
 import androidx.room.PrimaryKey;
 
-import com.example.vladkerasosi.ObjectSerializer;
+
 
 import java.io.Serializable;
 
 @Entity(tableName = "purchases")
-public class Purchases extends ObjectSerializer implements Serializable {
+public class Purchases  implements Serializable {
 
     @PrimaryKey (autoGenerate = true)
     @ColumnInfo(name ="purchases_id")
@@ -85,9 +85,7 @@ public class Purchases extends ObjectSerializer implements Serializable {
         this.sum = sum;
     }
 
-    @Ignore
-    public Purchases() {
-    }
+
 
     public Purchases(long id, String data, float sum, TypesOfPurchases typesOfPurchases, String name, String description) {
         this.id = id;

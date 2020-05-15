@@ -1,8 +1,10 @@
 package com.example.vladkerasosi;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
-import android.content.Context;
+
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +17,10 @@ import Model.Purchases;
 public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     private ArrayList<Purchases> purchasesArrayList;
-    private Context context;
     private MainActivity mainActivity;
 
-    public DataAdapter(ArrayList<Purchases> purchasesArrayList, Context context,MainActivity mainActivity) {
+    DataAdapter(ArrayList<Purchases> purchasesArrayList, MainActivity mainActivity) {
         this.purchasesArrayList = purchasesArrayList;
-        this.context = context;
         this.mainActivity=mainActivity;
     }
 
@@ -28,8 +28,7 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -43,6 +42,7 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
         holder.title.setText(title);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                     mainActivity.editPurchases(purchases,position);
@@ -56,39 +56,20 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
         return purchasesArrayList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder //implements
-//            View.OnClickListener
+    static class ViewHolder extends RecyclerView.ViewHolder //implements
+//
     {
 
-      //  public ImageView purcaheseImg;
-        public TextView title;
-    //    public TextView description;
 
-        public ViewHolder(@NonNull View itemView) {
+      TextView title;
+
+
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
-           // itemView.setOnClickListener(this);
-
-           // purcaheseImg = itemView.findViewById(R.id.image);
             title = itemView.findViewById(R.id.title);
-         //
-            //
-            //    description = itemView.findViewById(R.id.description);
+
         }
 
 
-
-//        @Override
-//        public void onClick(View v) {
-//            int position = getAdapterPosition();
-//            Purchases purchases = purchasesArrayList.get(position);
-//
-//
-//            Intent intent = new Intent(context, RecipeActivity.class);
-//            intent.putExtra("imageResource", pizzaRecipeItem.getImageResource());
-//            intent.putExtra("title", pizzaRecipeItem.getTitle());
-//            intent.putExtra("description", pizzaRecipeItem.getDescription());
-//            intent.putExtra("recipe", pizzaRecipeItem.getRecipe());
-//            context.startActivity(intent);
-//        }
     }
 }

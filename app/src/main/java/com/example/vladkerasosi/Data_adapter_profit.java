@@ -2,7 +2,6 @@ package com.example.vladkerasosi;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +14,11 @@ import Model.Profit;
 public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_profit.ViewHolder> {
 
     private ArrayList<Profit> profitArrayList;
-    private Context context;
     private Profit_Activity profit_activity;
 
 
-    Data_adapter_profit(ArrayList<Profit> profitArrayList, Context context,Profit_Activity profit_activity) {
+    Data_adapter_profit(ArrayList<Profit> profitArrayList,Profit_Activity profit_activity) {
         this.profitArrayList = profitArrayList;
-        this.context = context;
         this.profit_activity=profit_activity;
     }
 
@@ -29,8 +26,7 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -54,15 +50,15 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
         return profitArrayList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder //implements
+    static class ViewHolder extends RecyclerView.ViewHolder //implements
 //            View.OnClickListener
     {
 
         //  public ImageView purcaheseImg;
-        public TextView title;
+        TextView title;
         //    public TextView description;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             // itemView.setOnClickListener(this);
 

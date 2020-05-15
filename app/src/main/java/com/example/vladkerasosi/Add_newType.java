@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import Data.AppDatabase;
 import Model.Profit;
@@ -49,6 +50,7 @@ public class Add_newType extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_type);
         ActionBar actionBar =getSupportActionBar();
+        assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Редактирование категорий");
@@ -81,7 +83,8 @@ public class Add_newType extends AppCompatActivity {
 
     }
 
-    private void editType(final int position, long id, final Boolean isUpdate){
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void editType(final int position, final Boolean isUpdate){
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
         @SuppressLint("InflateParams") View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
 
@@ -145,7 +148,7 @@ public class Add_newType extends AppCompatActivity {
             }
 
             final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
-            alertDialog.getWindow().setBackgroundDrawableResource(R.color.backgroundDialog);
+            Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawableResource(R.color.backgroundDialog);
             alertDialog.show();
 
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -167,7 +170,7 @@ public class Add_newType extends AppCompatActivity {
                     if (!types.isEmpty()) {
 
                         if(isUpdate){
-                            updateType(0,nameEditText.getText().toString(),position);
+                            updateType(nameEditText.getText().toString(),position);
                         } else {
                             addNewType(nameEditText.getText().toString());
                         }
@@ -243,9 +246,10 @@ public class Add_newType extends AppCompatActivity {
         setDefType();
         setListView();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                editType(position,id,true);
+                editType(position, true);
 
             }
         });
@@ -306,7 +310,7 @@ public class Add_newType extends AppCompatActivity {
 
     }
 
-    private void updateType(long id,String name,int position){
+    private void updateType(String name, int position){
 
 
         if(typeOfactivity.equals("profit")){
@@ -360,8 +364,9 @@ public class Add_newType extends AppCompatActivity {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void CreateNewType(View view)  {
-        editType(-1,-1,false);
+        editType(-1, false);
 
     }
 }

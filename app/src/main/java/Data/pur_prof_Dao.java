@@ -17,62 +17,62 @@ import Model.TypesOfPurchases;
 public interface pur_prof_Dao {
 
     @Insert
-    public long addPurchases(Purchases purchases);
+     void addPurchases(Purchases purchases);
 
     @Update
-    public void updatePurchases(Purchases purchases);
+     void updatePurchases(Purchases purchases);
 
     @Delete
-    public void deletePurchases(Purchases purchases);
+     void deletePurchases(Purchases purchases);
 
     @Query("select * from purchases")
-    public List<Purchases> getAllPurchases();
+     List<Purchases> getAllPurchases();
 
-    @Query("select * from purchases where purchases_id ==:purId ")
-    public  Purchases getPurchases(long purId);
+//    @Query("select * from purchases where purchases_id ==:purId ")
+//      Purchases getPurchases(long purId);
 
     @Insert
-    public long addTypeOfPurchases(TypesOfPurchases typesOfPurchases);
+     void addTypeOfPurchases(TypesOfPurchases typesOfPurchases);
 
     @Update
-    public void updateTypeOfPurchases(TypesOfPurchases typesOfPurchases);
+     void updateTypeOfPurchases(TypesOfPurchases typesOfPurchases);
 
     @Delete
-    public void deleteTypeOfPurchases(TypesOfPurchases typesOfPurchases);
+     void deleteTypeOfPurchases(TypesOfPurchases typesOfPurchases);
 
     @Query("select * from purchases_types_table")
-    public List<TypesOfPurchases> getAllTypeOfPurchases();
+     List<TypesOfPurchases> getAllTypeOfPurchases();
 
-    @Query("select * from purchases_types_table where type_purchases_id ==:typePurId ")
-    public  TypesOfPurchases getTypeOfPurchases(long typePurId);
+//    @Query("select * from purchases_types_table where type_purchases_id ==:typePurId ")
+//      TypesOfPurchases getTypeOfPurchases(long typePurId);
 
     @Insert
-    public long addProfit(Profit profit);
+     void addProfit(Profit profit);
 
     @Update
-    public void updateProfit(Profit profit);
+     void updateProfit(Profit profit);
 
     @Delete
-    public void deleteProfit(Profit profit);
+     void deleteProfit(Profit profit);
 
     @Query("select * from profit")
-    public List<Profit> getAllProfit();
+     List<Profit> getAllProfit();
 
-    @Query("select * from profit where profit_id ==:profId ")
-    public  Profit getProfit(long profId);
+//    @Query("select * from profit where profit_id ==:profId ")
+//    public  Profit getProfit(long profId);
 
     @Insert
-    public long addTypeOfProfit(TypeOfProfit typeOfProfit);
+     void addTypeOfProfit(TypeOfProfit typeOfProfit);
 
     @Update
-    public void updateTypeOfProfit( TypeOfProfit typeOfProfit);
+     void updateTypeOfProfit( TypeOfProfit typeOfProfit);
 
     @Delete
-    public void deleteTypeOfProfit(TypeOfProfit typeOfProfit);
+     void deleteTypeOfProfit(TypeOfProfit typeOfProfit);
 
     @Query("select * from profit_types_table")
-    public List<TypeOfProfit> getAllTypeOfProfit();
+     List<TypeOfProfit> getAllTypeOfProfit();
 
-    @Query("select * from profit_types_table where type_profit_id ==:typeProfID ")
-    public  TypeOfProfit getTypeOfProfit(long typeProfID);
+//    @Query("select * from profit_types_table where type_profit_id ==:typeProfID ")
+//      TypeOfProfit getTypeOfProfit(long typeProfID);
 }

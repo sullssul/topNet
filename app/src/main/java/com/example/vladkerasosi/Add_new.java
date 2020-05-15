@@ -2,7 +2,7 @@ package com.example.vladkerasosi;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
+
 import androidx.room.Room;
 
 import android.content.Intent;
@@ -29,7 +29,7 @@ import Model.Purchases;
 import Model.TypeOfProfit;
 import Model.TypesOfPurchases;
 
-import static android.app.UiModeManager.MODE_NIGHT_YES;
+
 
 public class Add_new extends AppCompatActivity  {
 
@@ -53,6 +53,7 @@ public class Add_new extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new);
         actionBar =getSupportActionBar();
+        assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -79,13 +80,11 @@ public class Add_new extends AppCompatActivity  {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void settitle(){
@@ -179,9 +178,9 @@ public class Add_new extends AppCompatActivity  {
     }
 
     public void AddNew(View view) {
-        float sum=0;
-        String name="";
-        String description="";
+        float sum;
+        String name;
+        String description;
 
         EditText sum_editText=findViewById(R.id.sum_edit_text);
         EditText name_editText=findViewById(R.id.name_edit_text);

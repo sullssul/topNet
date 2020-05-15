@@ -2,25 +2,10 @@ package com.example.vladkerasosi;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.room.Room;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import Data.AppDatabase;
-import Model.Profit;
-import Model.Purchases;
-import Model.TypeOfProfit;
-import Model.TypesOfPurchases;
 
 
 public class Settings_Activity extends AppCompatActivity  {
@@ -32,6 +17,7 @@ public class Settings_Activity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ActionBar actionBar =getSupportActionBar();
+        assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Настройки");
@@ -52,12 +38,6 @@ public class Settings_Activity extends AppCompatActivity  {
     }
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-        };
 
 
 
