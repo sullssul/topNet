@@ -4,6 +4,7 @@ package com.example.vladkerasosi;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,6 +47,7 @@ import Model.TypesOfPurchases;
 
 public class MainActivity extends AppCompatActivity {
 
+
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     private DataAdapter dataAdapter;
@@ -59,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> types=new ArrayList<>();
 
     private SharedPreferences sPref;
+    private  SharedPreferences sPrefSettings;
     private float totalSum=0;
     private float Limit=0;
 
-    boolean NotifLimit;
     private static final int NOTIFY_ID = 101;
 
 
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView=findViewById(R.id.recylerView);
+        sPrefSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        setDarkMode();
 
         appDatabase = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"AppDB")
                 .allowMainThreadQueries()
@@ -83,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
 
     private void loadData(){
         purchasesArrayList.clear();
@@ -137,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
         alertDialogBuilderUserInput.setView(view);
 
-       // TextView titleTV = view.findViewById(R.id.titleTV);
          final EditText nameEditText = view.findViewById(R.id.nameEditText);
          final EditText priceEditText = view.findViewById(R.id.priceEditText);
          final EditText decriptionEditText=view.findViewById(R.id.descriptiontEdit);
@@ -161,7 +163,8 @@ public class MainActivity extends AppCompatActivity {
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(spinnerAdapter);
             for (int i = 0; i < typesOfPurchases.size(); i++) {
-                if (typesOfPurchases.get(i).equals(purchases.getTypesOfPurchasesName())) {
+
+                if (purchases.getTypesOfPurchases().equals(typesOfPurchases.get(i))) {
                     spinner.setSelection(i);
                 }
             }
@@ -191,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
-        Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawableResource(R.color.backgroundDialog);
+       // Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawableResource(R.color.backgroundDialog);
         alertDialog.show();
 
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -285,16 +288,21 @@ public class MainActivity extends AppCompatActivity {
         notificationManager.notify(NOTIFY_ID, builder.build());
     }
 
+    public  void setDarkMode(){
+        if(sPrefSettings.getBoolean("DarkMode",false)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+    }
+
 
     public void CheckLimit(){
         if(totalSum>=Limit){
             showNotif();
         }
-    }
-
-    public void LoadNotifLimit(){
-        sPref = getSharedPreferences("NotifLimit",MODE_PRIVATE);
-        NotifLimit = sPref.getBoolean("NotifLimit", false);
     }
 
     @Override
@@ -404,16 +412,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void SaveLimit(){
-
-        sPref = getSharedPreferences("Limit",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putFloat("Limit",Limit);
-        editor.apply();
-    }
-
-    public void LoadLimit(){
-        sPref = getSharedPreferences("Limit",MODE_PRIVATE);
-        Limit = sPref.getFloat("Limit", 0);
-    }
 }

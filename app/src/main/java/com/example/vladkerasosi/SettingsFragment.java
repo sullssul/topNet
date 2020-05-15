@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import androidx.annotation.RequiresApi;
 
 import androidx.appcompat.app.AlertDialog;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
@@ -53,6 +55,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private AppDatabase appDatabase;
     private Context context;
     private Settings_Activity settings_activity;
+    private  SharedPreferences sPrefSettings;
 
 
 
@@ -70,6 +73,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 .allowMainThreadQueries()
                 .build();
 
+        sPrefSettings = PreferenceManager.getDefaultSharedPreferences(context);
         purchasesArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllPurchases());
         typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
         profitArrayList.addAll(appDatabase.getPur_Pro_Dao().getAllProfit());
@@ -99,6 +103,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
       if (preference instanceof EditTextPreference) {
             preference.setSummary(value);
         }
+
     }
 
 
@@ -129,12 +134,22 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
 
 
+    @SuppressLint("ShowToast")
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
         if (!(preference instanceof SwitchPreference)) {
             String value = sharedPreferences.getString(preference.getKey(), "");
             setPreferenceLabel(preference, value);
+        }
+        if (preference.getKey().equals("DarkMode")) {
+            Toast toast = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                toast = Toast.makeText(getContext(), "Тема изменится после перезапуска \tприложения", Toast.LENGTH_LONG);
+            }
+            toast.show();
+
+
         }
     }
 

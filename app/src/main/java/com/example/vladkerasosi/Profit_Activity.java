@@ -31,6 +31,7 @@ import org.eazegraph.lib.models.PieModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
 import Data.AppDatabase;
@@ -110,7 +111,8 @@ public class Profit_Activity extends AppCompatActivity {
         SaveBalance();
     }
 
-    public void editProfit(final Profit profit,final int position)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void editProfit(final Profit profit, final int position)
     {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
         @SuppressLint("InflateParams") View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
@@ -167,7 +169,7 @@ public class Profit_Activity extends AppCompatActivity {
         }
 
         final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(R.color.backgroundDialog);
+        Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawableResource(R.color.backgroundDialog);
         alertDialog.show();
 
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
