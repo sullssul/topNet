@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -276,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ShowToast")
-    public void showNotif(){
+    public void showNotify(){
         // Идентификатор канала
         // Идентификатор канала
         String CHANNEL_ID = "lol_channel";
@@ -284,12 +286,12 @@ public class MainActivity extends AppCompatActivity {
                 new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_attach_money_black_24dp)
                         .setContentTitle("Превышен лимит")
-                        .setContentText("Превышен ежемясяный бюджет, сократите расходы!")
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        .setContentText("Превышен ежемясяный бюджет, сократите расходы!");
+        Notification notification = builder.build();
 
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(MainActivity.this);
-        notificationManager.notify(NOTIFY_ID, builder.build());
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1,notification);
 
         Toast toast = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -317,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
                 totalSum += purchases.getSum();
             }
             if (totalSum > limit) {
-                showNotif();
+                showNotify();
             }
         }
     }
