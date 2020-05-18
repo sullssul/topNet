@@ -29,6 +29,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
@@ -145,6 +146,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Toast toast = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 toast = Toast.makeText(getContext(), "Тема изменится после перезапуска \tприложения", Toast.LENGTH_LONG);
+
             }
             toast.show();
 

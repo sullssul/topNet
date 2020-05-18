@@ -169,9 +169,9 @@ public class MainActivity extends AppCompatActivity {
             ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(spinnerAdapter);
-            for (int i = 0; i < typesOfPurchases.size(); i++) {
+            for (int i = 0; i < types.size(); i++) {
 
-                if (purchases.getTypesOfPurchases().equals(typesOfPurchases.get(i))) {
+                if (purchases.getTypesOfPurchasesName().equals(types.get(i))) {
                     spinner.setSelection(i);
                 }
             }

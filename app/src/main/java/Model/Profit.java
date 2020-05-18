@@ -8,11 +8,11 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-@Entity(tableName = "profit")
+@Entity(tableName = "profit") // назавние таблицы
 public class Profit implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name="profit_id")
+    @PrimaryKey(autoGenerate = true) // метка для атрибута, который будет первичным ключом
+    @ColumnInfo(name="profit_id") // имя столбца таблицы
     private long id;
 
     @ColumnInfo(name="profit_date")
@@ -24,7 +24,7 @@ public class Profit implements Serializable {
     @ColumnInfo(name ="profit_name")
     private String name;
 
-    @Embedded
+    @Embedded // для вложенных классов
     private TypeOfProfit typeOfProfit;
 
     public Profit(long id, String date, float sum, String name, TypeOfProfit typeOfProfit) {

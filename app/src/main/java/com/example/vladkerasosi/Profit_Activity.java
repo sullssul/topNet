@@ -138,8 +138,8 @@ public class Profit_Activity extends AppCompatActivity {
             ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(spinnerAdapter);
-            for (int i = 0; i < typesOfProfit.size(); i++) {
-                if (typesOfProfit.get(i).equals(profit.getTypeOfProfit())) {
+            for (int i = 0; i < types.size(); i++) {
+                if (types.get(i).equals(profit.getTypeOfProfitName())) {
                     spinner.setSelection(i);
                 }
             }
