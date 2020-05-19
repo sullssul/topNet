@@ -1,4 +1,4 @@
-package com.example.vladkerasosi;
+package com.prikolastochka.finanser;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;

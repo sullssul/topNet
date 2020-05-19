@@ -1,11 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Баланс:"
+            android:textSize="30sp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:id="@+id/balance_purchases"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="30sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/textView2"
+            android:layout_toEndOf="@+id/textView2"
+            />
+
+        <Button
+            android:id="@+id/switch_but"
+            android:onClick="GotToProfit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#009688"
+            android:text="Доходы"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp" />
+
+    </RelativeLayout>
 
     <org.eazegraph.lib.charts.PieChart
         android:id="@+id/piechart"
@@ -17,77 +62,35 @@
         app:egLegendTextSize="18sp"
         app:egShowDecimal="true"
         app:egValueTextSize="36sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
-        tools:ignore="MissingConstraints" />
-
-    <Button
-        android:id="@+id/add_purchases"
-        android:layout_width="377dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="8dp"
-        android:background="#009688"
-        android:onClick="tap_add_purchases"
-        android:shadowRadius="20"
-        android:text="Добавить покупку"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recylerView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_purchases"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/piechart" />
+        android:paddingEnd="5dp"
+        android:paddingRight="5dp"
+        android:paddingStart="5dp"
+        android:paddingLeft="5dp"
+        />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="110dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="4dp"
-        android:text="Баланс:"
-        android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/switch_but"
-        android:onClick="GotToProfit"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginRight="7dp"
-        android:background="#009688"
-        android:text="Доходы"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+              android:layout_marginBottom="10dp">
+        <Button
+            android:id="@+id/add_purchases"
+            android:layout_width="388dp"
+            android:layout_height="wrap_content"
+            android:background="#009688"
+            android:onClick="tap_add_purchases"
+            android:shadowRadius="20"
+            android:text="Добавить покупку"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
 
-    <TextView
-        android:id="@+id/balance_purchases"
-        android:layout_width="158dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toStartOf="@+id/switch_but"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="parent" />
+            />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+
+</LinearLayout>

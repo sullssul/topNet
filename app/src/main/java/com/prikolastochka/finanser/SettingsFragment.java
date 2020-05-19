@@ -1,4 +1,4 @@
-package com.example.vladkerasosi;
+package com.prikolastochka.finanser;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -29,7 +29,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 

@@ -1,4 +1,4 @@
-package com.example.vladkerasosi;
+package com.prikolastochka.finanser;
 
 import android.content.Context;
 

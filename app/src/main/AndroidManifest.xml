@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.vladkerasosi">
+    package="com.prikolastochka.finanser">
 
     <application
         android:allowBackup="true"
@@ -9,11 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Add_newType"></activity>
-        <activity android:name=".Settings_Activity" />
-        <activity android:name=".Profit_Activity" />
-        <activity android:name=".Add_new" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.prikolastochka.finanser.Add_newType"></activity>
+        <activity android:name="com.prikolastochka.finanser.Settings_Activity" />
+        <activity android:name="com.prikolastochka.finanser.Profit_Activity" />
+        <activity android:name="com.prikolastochka.finanser.Add_new" />
+        <activity android:name="com.prikolastochka.finanser.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

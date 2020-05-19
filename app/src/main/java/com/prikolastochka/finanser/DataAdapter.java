@@ -1,4 +1,4 @@
-package com.example.vladkerasosi;
+package com.prikolastochka.finanser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -12,17 +12,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import Model.Profit;
+import Model.Purchases;
 
-public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_profit.ViewHolder> {
+public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
-    private ArrayList<Profit> profitArrayList;
-    private Profit_Activity profit_activity;
+    private ArrayList<Purchases> purchasesArrayList;
+    private MainActivity mainActivity;
 
-
-    Data_adapter_profit(ArrayList<Profit> profitArrayList,Profit_Activity profit_activity) {
-        this.profitArrayList = profitArrayList;
-        this.profit_activity=profit_activity;
+    DataAdapter(ArrayList<Purchases> purchasesArrayList, MainActivity mainActivity) {
+        this.purchasesArrayList = purchasesArrayList;
+        this.mainActivity=mainActivity;
     }
 
     @NonNull
@@ -34,16 +33,19 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        final Profit profit = profitArrayList.get(position);
-        String title = profit.getSum() + ";\t" + profit.getName() + ";\tКатегория: " + profit.getTypeOfProfitName() + ";\tДата: " + profit.getDate();
+        final Purchases purchases = purchasesArrayList.get(position);
+        String title = purchases.getSum() + ";\t"
+                + purchases.getName()
+                + ";\tКатегория: "
+                + purchases.getTypesOfPurchasesName()
+                + ";\tДата: " + purchases.getData();
 
         holder.title.setText(title);
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                profit_activity.editProfit(profit,position);
+                    mainActivity.editPurchases(purchases,position);
             }
         });
 
@@ -51,27 +53,22 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
 
     @Override
     public int getItemCount() {
-        return profitArrayList.size();
+        return purchasesArrayList.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder //implements
-//            View.OnClickListener
+//
     {
 
-        //  public ImageView purcaheseImg;
-        TextView title;
-        //    public TextView description;
+
+      TextView title;
+
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // itemView.setOnClickListener(this);
-
-            // purcaheseImg =
             title = itemView.findViewById(R.id.title);
 
         }
-
-
 
 
     }
