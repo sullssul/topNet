@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -88,7 +89,16 @@ public class MainActivity extends AppCompatActivity {
 
         if(typesOfPurchases.isEmpty())  firstStart();
 
+    }
 
+    private void firstStart(){
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Авто"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Еда"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Медицина"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Развлечения"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Связь"));
+        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Другое"));
+        typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
     }
 
     private void loadData(){
@@ -98,17 +108,7 @@ public class MainActivity extends AppCompatActivity {
         typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
     }
 
-    private void firstStart(){
 
-        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Авто"));
-        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Еда"));
-        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Медицина"));
-        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Развлечения"));
-        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Связь"));
-        appDatabase.getPur_Pro_Dao().addTypeOfPurchases(new TypesOfPurchases(0,"Другое"));
-        typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
-
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -116,10 +116,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         LoadBalance();
         loadData();
-//        LoadLimit();
-//        LoadNotifLimit();
-//        if(NotifLimit)
-//            CheckLimit();
         setRecyclerView();
         setPiechartItem();
         setTextView();
@@ -256,12 +252,9 @@ public class MainActivity extends AppCompatActivity {
         purchases.setSum(sum);
         purchases.setTypesOfPurchases(typeOfPurchases);
 
-        appDatabase.getPur_Pro_Dao().updatePurchases(purchases);
+        new UpdatePurchasesAsync().execute(purchases);
         purchasesArrayList.set(position,purchases);
-        dataAdapter.notifyDataSetChanged();
-        setPiechartItem();
-        setTextView();
-        checkLimit();
+
 
     }
 
@@ -270,11 +263,9 @@ public class MainActivity extends AppCompatActivity {
 
         Balance+=purchases.getSum();
         purchasesArrayList.remove(position);
-        appDatabase.getPur_Pro_Dao().deletePurchases(purchases);
-        dataAdapter.notifyDataSetChanged();
-        setPiechartItem();
-        setTextView();
-        checkLimit();
+
+        new DeletePurchasesAsync().execute(purchases);
+
 
     }
 
@@ -442,6 +433,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
     }
 
     public void tap_add_purchases(View view) {
@@ -456,17 +448,59 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.go_next_in, R.anim.go_next_out);
     }
 
-    public void SaveBalance(){
+    private void SaveBalance(){
         sPref = getSharedPreferences("Balance",MODE_PRIVATE);
         SharedPreferences.Editor editor = sPref.edit();
         editor.putFloat("Balance", Balance);
         editor.apply();
     }
 
-    public void LoadBalance(){
+    private void LoadBalance(){
         sPref = getSharedPreferences("Balance",MODE_PRIVATE);
         Balance = sPref.getFloat("Balance", 0);
 
     }
+
+    @SuppressLint("StaticFieldLeak")
+    private class UpdatePurchasesAsync extends AsyncTask<Purchases,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Purchases... purchases) {
+            appDatabase.getPur_Pro_Dao().updatePurchases(purchases[0]);
+            return null;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            dataAdapter.notifyDataSetChanged();
+            setPiechartItem();
+            setTextView();
+            checkLimit();
+        }
+    }
+
+   @SuppressLint("StaticFieldLeak")
+   private class DeletePurchasesAsync extends AsyncTask<Purchases,Void,Void>{
+       @Override
+       protected Void doInBackground(Purchases... purchases) {
+           appDatabase.getPur_Pro_Dao().deletePurchases(purchases[0]);
+
+           return null;
+       }
+
+       @RequiresApi(api = Build.VERSION_CODES.O)
+       @Override
+       protected void onPostExecute(Void aVoid) {
+           super.onPostExecute(aVoid);
+           dataAdapter.notifyDataSetChanged();
+           setPiechartItem();
+           setTextView();
+           checkLimit();
+       }
+   }
+
+
 
 }

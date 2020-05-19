@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -223,11 +224,9 @@ public class Profit_Activity extends AppCompatActivity {
         profit.setSum(sum);
         profit.setTypeOfProfit(typeOfProfit);
 
-        appDatabase.getPur_Pro_Dao().updateProfit(profit);
+        new UpdateProfitAsync().execute(profit);
         profitArrayList.set(position,profit);
-        data_adapter_profit.notifyDataSetChanged();
-        setPiechartItem();
-        setTextView();
+
 
     }
 
@@ -236,10 +235,8 @@ public class Profit_Activity extends AppCompatActivity {
 
         Balance-=profit.getSum();
         profitArrayList.remove(position);
-        appDatabase.getPur_Pro_Dao().deleteProfit(profit);
-        data_adapter_profit.notifyDataSetChanged();
-        setPiechartItem();
-        setTextView();
+        new DeleteProfitAsync().execute(profit);
+
     }
 
     @Override
@@ -355,5 +352,43 @@ public class Profit_Activity extends AppCompatActivity {
         sPref = getSharedPreferences("Balance",MODE_PRIVATE);
         Balance = sPref.getFloat("Balance", 0);
 
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private  class UpdateProfitAsync extends AsyncTask<Profit,Void,Void>{
+
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            data_adapter_profit.notifyDataSetChanged();
+            setPiechartItem();
+            setTextView();
+        }
+
+        @Override
+        protected Void doInBackground(Profit... profits) {
+            appDatabase.getPur_Pro_Dao().updateProfit(profits[0]);
+            return null;
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class DeleteProfitAsync extends AsyncTask<Profit,Void,Void>{
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            data_adapter_profit.notifyDataSetChanged();
+            setPiechartItem();
+            setTextView();
+        }
+
+        @Override
+        protected Void doInBackground(Profit... profits) {
+            appDatabase.getPur_Pro_Dao().deleteProfit(profits[0]);
+            return null;
+        }
     }
 }
