@@ -80,7 +80,7 @@
               android:layout_marginBottom="10dp">
         <Button
             android:id="@+id/add_purchases"
-            android:layout_width="388dp"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:background="#009688"
             android:onClick="tap_add_purchases"
