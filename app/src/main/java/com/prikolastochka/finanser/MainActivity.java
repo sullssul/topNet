@@ -71,10 +71,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sPref;
     private  SharedPreferences sPrefSettings;
 
-    // Идентификатор уведомления
-
-
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

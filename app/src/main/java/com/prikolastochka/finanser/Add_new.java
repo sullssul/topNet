@@ -98,7 +98,6 @@ public class Add_new extends AppCompatActivity  {
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();

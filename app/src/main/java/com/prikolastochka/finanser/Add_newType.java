@@ -361,8 +361,6 @@ public class Add_newType extends AppCompatActivity {
 
     }
 
-
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void CreateNewType(View view)  {
         editType(-1, false);

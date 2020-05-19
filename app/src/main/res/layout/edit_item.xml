@@ -12,7 +12,7 @@
         android:layout_marginBottom="15dp"
         android:lineSpacingExtra="10sp"
         android:text="Редактирование записи"
-        android:textColor="@android:color/secondary_text_light_nodisable"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -24,7 +24,7 @@
         android:background="@android:color/transparent"
         android:gravity="top"
         android:hint="Название"
-        android:textColor="@android:color/secondary_text_light_nodisable"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp" />
 
     <EditText
@@ -36,7 +36,7 @@
         android:gravity="top"
         android:hint="Сумма"
         android:inputType="number"
-        android:textColor="@android:color/secondary_text_light_nodisable"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp" />
 
     <EditText
@@ -47,7 +47,7 @@
         android:background="@android:color/transparent"
         android:gravity="top"
         android:hint="Заметка"
-        android:textColor="@android:color/secondary_text_light_nodisable"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp" />
 
     <EditText
@@ -58,7 +58,7 @@
         android:background="@android:color/transparent"
         android:gravity="top"
         android:hint="Дата"
-        android:textColor="@android:color/secondary_text_light_nodisable"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp" />
 
     <Spinner
@@ -67,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
+        android:textColor="?android:attr/textColorPrimary"
         android:gravity="top"
         android:textSize="24sp" />
 
