@@ -41,8 +41,13 @@ import android.widget.Toast;
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
 import java.util.Random;
 
 import Data.AppDatabase;
@@ -62,10 +67,15 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String,Float> piechartItem= new HashMap<>();
     private NotificationManager notifManager;
 
+    Date currentDate = new Date();
+    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+    String dateText = dateFormat.format(currentDate);
+
 
 
     private AppDatabase appDatabase;
     private float Balance=0;
+    private int times;
 
     private ArrayList<String> types=new ArrayList<>();
 
@@ -108,15 +118,15 @@ public class MainActivity extends AppCompatActivity {
         typesOfPurchases.addAll(appDatabase.getPur_Pro_Dao().getAllTypeOfPurchases());
     }
 
-
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onStart() {
         super.onStart();
         LoadBalance();
         loadData();
-        setRecyclerView();
+        loadTimes();
+        sortingBytime();
+      //  setRecyclerView();
         setPiechartItem();
         setTextView();
         checkLimit();
@@ -144,6 +154,10 @@ public class MainActivity extends AppCompatActivity {
          final EditText decriptionEditText=view.findViewById(R.id.descriptiontEdit);
          final EditText dateEditText=view.findViewById(R.id.dateEditText);
          final Spinner spinner=view.findViewById(R.id.spinerEdit);
+        final TextView textView= view.findViewById(R.id.titleTV);
+
+        textView.setText("Редактирование записей");
+
 
         priceEditText.setVisibility(View.VISIBLE);
         decriptionEditText.setVisibility(View.VISIBLE);
@@ -339,7 +353,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     private void checkLimit(){
         if(sPrefSettings.getBoolean("Notify",false)) {
             float limit = Float.parseFloat(sPrefSettings.getString("Limit", "50000"));
@@ -376,7 +389,24 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void sortingBytime(){
+        if(times!=3){
+            int month= Integer.parseInt(dateText.substring(3,5));
+            month-=times;
+            for(Iterator<Purchases> iterator=purchasesArrayList.iterator();iterator.hasNext();) {
+                Purchases purchases=iterator.next();
+                if(purchases.getMonth()!=month){
+                   iterator.remove();
+                }
+            }
+        }
+        setPiechartItem();
+        setRecyclerView();
+    }
+
     public void setRecyclerView(){
+
         recyclerView = findViewById(R.id.recylerView);
         recyclerView.setHasFixedSize(true);
         dataAdapter = new DataAdapter(purchasesArrayList, MainActivity.this);
@@ -459,6 +489,90 @@ public class MainActivity extends AppCompatActivity {
         sPref = getSharedPreferences("Balance",MODE_PRIVATE);
         Balance = sPref.getFloat("Balance", 0);
 
+    }
+
+    private void saveTimes(){
+        sPref = getSharedPreferences("times",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sPref.edit();
+        editor.putInt("times", times);
+        editor.apply();
+    }
+
+    private void loadTimes(){
+        sPref = getSharedPreferences("times",MODE_PRIVATE);
+        times = sPref.getInt("times", 0);
+    }
+
+
+    public void start_settings_sorting_type(MenuItem item) {
+
+    }
+
+    public void start_settings_sorting_time(MenuItem item) {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
+        @SuppressLint("InflateParams") View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
+
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
+        alertDialogBuilderUserInput.setView(view);
+
+
+        final TextView textView= view.findViewById(R.id.titleTV);
+        final EditText nameEditText = view.findViewById(R.id.nameEditText);
+        final EditText priceEditText = view.findViewById(R.id.priceEditText);
+        final EditText decriptionEditText=view.findViewById(R.id.descriptiontEdit);
+        final EditText dateEditText=view.findViewById(R.id.dateEditText);
+        final Spinner spinner=view.findViewById(R.id.spinerEdit);
+
+        textView.setText("Показывать расходы за:");
+        nameEditText.setVisibility(View.GONE);
+        priceEditText.setVisibility(View.GONE);
+        decriptionEditText.setVisibility(View.GONE);
+        dateEditText.setVisibility(View.GONE);
+
+        spinner.setVisibility(View.VISIBLE);
+        ArrayAdapter<?> adapter =
+                ArrayAdapter.createFromResource(this, R.array.times, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+
+        loadTimes();
+        if(times==0) {
+            spinner.setSelection(0);
+        } else if(times==1){
+            spinner.setSelection(1);
+        } else if(times==2){
+            spinner.setSelection(2);
+        } else if(times==3) {
+            spinner.setSelection(3);
+        }
+
+
+
+        alertDialogBuilderUserInput.setCancelable(true)
+                .setPositiveButton("Сохранить", new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        times=spinner.getSelectedItemPosition();
+                        saveTimes();
+                        loadData();
+                        sortingBytime();
+                    }
+                });
+        alertDialogBuilderUserInput.setNegativeButton( "Отмена", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+
+            }
+        } );
+
+
+        final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+        alertDialog.show();
     }
 
     @SuppressLint("StaticFieldLeak")

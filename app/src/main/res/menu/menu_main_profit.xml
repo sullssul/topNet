@@ -9,6 +9,25 @@
         android:orderInCategory="100"
         android:onClick="start_settings"
         android:title="@string/action_settings"
-        app:showAsAction="never"/>>
+        app:showAsAction="never"/>
+
+    <item
+
+        android:id="@+id/settings_sorting_time"
+        android:orderInCategory="100"
+        android:onClick="start_settings_sorting_time"
+        android:title="@string/settings_sorting_time"
+        app:showAsAction="never"/>
+
+    <item
+
+        android:id="@+id/settings_sorting_type"
+        android:orderInCategory="100"
+        android:onClick="start_settings_sorting_type"
+        android:title="@string/settings_sorting_type"
+        app:showAsAction="never"/>
+
+
+
 
 </menu>

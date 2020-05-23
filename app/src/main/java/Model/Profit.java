@@ -1,11 +1,8 @@
 package Model;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
-
 import androidx.room.PrimaryKey;
-
 import java.io.Serializable;
 
 @Entity(tableName = "profit") // назавние таблицы
@@ -33,6 +30,10 @@ public class Profit implements Serializable {
         this.sum = sum;
         this.name = name;
         this.typeOfProfit = typeOfProfit;
+    }
+
+    public int getMonth(){
+        return Integer.parseInt(date.substring(3,5));
     }
 
     public long getId() {

@@ -3,11 +3,7 @@ package Model;
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
-
 import androidx.room.PrimaryKey;
-
-
-
 import java.io.Serializable;
 
 @Entity(tableName = "purchases")
@@ -25,7 +21,6 @@ public class Purchases  implements Serializable {
 
     @Embedded
     private TypesOfPurchases typesOfPurchases;
-
 
     @ColumnInfo(name ="purchases_name")
     private String name;
@@ -51,6 +46,10 @@ public class Purchases  implements Serializable {
 
     public void setTypesOfPurchases(TypesOfPurchases typesOfPurchases) {
         this.typesOfPurchases = typesOfPurchases;
+    }
+
+    public int getMonth(){
+        return Integer.parseInt(data.substring(3,5));
     }
 
     public String getDescription() {
@@ -84,8 +83,6 @@ public class Purchases  implements Serializable {
     public void setSum(float sum) {
         this.sum = sum;
     }
-
-
 
     public Purchases(long id, String data, float sum, TypesOfPurchases typesOfPurchases, String name, String description) {
         this.id = id;

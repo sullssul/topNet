@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">Финансовый менеджер</string>
     <string name="action_settings">Настройки</string>
+    <string name="settings_sorting_time">Сортировка времени</string>
+    <string name="settings_sorting_type">Сортировка категорий</string>
+
+    <string-array name="times">
+        <item>Текущий мясяц</item>
+        <item>Прошлый месяц</item>
+        <item>Позапрошлый месяц</item>
+        <item>За все время</item>
+    </string-array>
 
 </resources>

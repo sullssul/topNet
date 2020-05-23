@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -98,8 +99,13 @@ public class Add_newType extends AppCompatActivity {
         final EditText decriptionEditText=view.findViewById(R.id.descriptiontEdit);
         final EditText dateEditText=view.findViewById(R.id.dateEditText);
         final Spinner spinner=view.findViewById(R.id.spinerEdit);
+        final TextView textView= view.findViewById(R.id.titleTV);
+
+        textView.setText("Редактирование категорий");
+
 
         if((!types.isEmpty())&&isUpdate)  nameEditText.setText(types.get(position));
+
         priceEditText.setVisibility(View.GONE);
         decriptionEditText.setVisibility(View.GONE);
         dateEditText.setVisibility(View.GONE);

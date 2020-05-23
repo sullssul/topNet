@@ -19,9 +19,11 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
     private ArrayList<Purchases> purchasesArrayList;
     private MainActivity mainActivity;
 
+
     DataAdapter(ArrayList<Purchases> purchasesArrayList, MainActivity mainActivity) {
         this.purchasesArrayList = purchasesArrayList;
         this.mainActivity=mainActivity;
+
     }
 
     @NonNull
@@ -40,7 +42,9 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
                 + purchases.getTypesOfPurchasesName()
                 + ";\tДата: " + purchases.getData();
 
-        holder.title.setText(title);
+            holder.title.setText(title);
+
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
