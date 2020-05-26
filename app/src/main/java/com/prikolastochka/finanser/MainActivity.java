@@ -16,6 +16,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,12 +52,12 @@ import java.util.Locale;
 import java.util.Random;
 
 import Data.AppDatabase;
+import Model.Profit;
 import Model.Purchases;
 
 import Model.TypesOfPurchases;
 
 public class MainActivity extends AppCompatActivity {
-
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -71,16 +72,14 @@ public class MainActivity extends AppCompatActivity {
     DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
     String dateText = dateFormat.format(currentDate);
 
-
-
     private AppDatabase appDatabase;
-    private float Balance=0;
-    private int times;
-    private String typeSort;
+    @SuppressLint("StaticFieldLeak")
+    public static Context context;
+    public static float Balance=0;
+    public static int times;
+    public static String typeSortPurchases;
 
     private ArrayList<String> types=new ArrayList<>();
-
-    private SharedPreferences sPref;
     private  SharedPreferences sPrefSettings;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -123,10 +122,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        loadItem("Balance");
+        context=this;
+        loadItem("Balance",context);
         loadData();
-        loadItem("times");
+        loadItem("times",context);
+        loadItem("typeSortPurchases",context);
         sortingBytime();
+        sortingByType();
       //  setRecyclerView();
         setPiechartItem();
         setTextView();
@@ -369,13 +371,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        saveItem("Balance");
+        saveItem("Balance",context);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-       saveItem("Balance");
+       saveItem("Balance",context);
     }
 
     @Override
@@ -398,6 +400,20 @@ public class MainActivity extends AppCompatActivity {
                 Purchases purchases=iterator.next();
                 if(purchases.getMonth()!=month){
                    iterator.remove();
+                }
+            }
+        }
+        setPiechartItem();
+        setRecyclerView();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void sortingByType(){
+        if(!typeSortPurchases.equals("Все категории")){
+            for(Iterator<Purchases> iterator=purchasesArrayList.iterator();iterator.hasNext();) {
+                Purchases purchases=iterator.next();
+                if(!purchases.getTypesOfPurchasesName().equals(typeSortPurchases)){
+                    iterator.remove();
                 }
             }
         }
@@ -501,23 +517,20 @@ public class MainActivity extends AppCompatActivity {
         dateEditText.setVisibility(View.GONE);
 
         spinner.setVisibility(View.VISIBLE);
-        ArrayAdapter<?> adapter =
-                ArrayAdapter.createFromResource(this, R.array.times, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        convertToString();
+        types.add("Все категории");
 
-        spinner.setAdapter(adapter);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
 
-        loadItem("times");
-        if(times==0) {
-            spinner.setSelection(0);
-        } else if(times==1){
-            spinner.setSelection(1);
-        } else if(times==2){
-            spinner.setSelection(2);
-        } else if(times==3) {
-            spinner.setSelection(3);
+        loadItem("typeSortPurchases",context);
+
+        for (int i = 0; i < types.size(); i++){
+            if(types.get(i).equals(typeSortPurchases)){
+                spinner.setSelection(i);
+            }
         }
-
 
 
         alertDialogBuilderUserInput.setCancelable(true)
@@ -526,10 +539,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        times=spinner.getSelectedItemPosition();
-                        saveItem("times");
+                        typeSortPurchases=spinner.getSelectedItem().toString();
+                        saveItem("typeSortPurchases",context);
+                        types.remove(types.size()-1);
                         loadData();
-                        sortingBytime();
+                        sortingByType();
                     }
                 });
         alertDialogBuilderUserInput.setNegativeButton( "Отмена", new DialogInterface.OnClickListener() {
@@ -575,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
 
         spinner.setAdapter(adapter);
 
-        loadItem("times");
+        loadItem("times",context);
         if(times==0) {
             spinner.setSelection(0);
         } else if(times==1){
@@ -595,7 +609,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
 
                         times=spinner.getSelectedItemPosition();
-                        saveItem("times");
+                        saveItem("times",context);
                         loadData();
                         sortingBytime();
                     }
@@ -614,10 +628,10 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public  void saveItem(String item){
-
+    public static void saveItem(String item, Context context){
+        SharedPreferences sPref;
         if(item.equals("times")){
-        sPref = getSharedPreferences("times",MODE_PRIVATE);
+        sPref = context.getSharedPreferences("times",MODE_PRIVATE);
         SharedPreferences.Editor editor = sPref.edit();
         editor.putInt("times", times);
         editor.apply();
@@ -625,35 +639,48 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(item.equals("Balance")) {
-            sPref = getSharedPreferences("Balance", MODE_PRIVATE);
+            sPref =context.getSharedPreferences("Balance", MODE_PRIVATE);
             SharedPreferences.Editor editor = sPref.edit();
             editor.putFloat("Balance", Balance);
             editor.apply();
         }
 
-        if(item.equals("typeSort")){
-            sPref = getSharedPreferences("typeSort",MODE_PRIVATE);
+        if(item.equals("typeSortPurchases")){
+            sPref = context.getSharedPreferences("typeSortPurchases",MODE_PRIVATE);
             SharedPreferences.Editor editor = sPref.edit();
-            editor.putString("typeSort", typeSort);
+            editor.putString("typeSortPurchases", typeSortPurchases);
+            editor.apply();
+        }
+
+        if(item.equals("typeSortProfit")){
+            sPref = context.getSharedPreferences("typeSortProfit",MODE_PRIVATE);
+            SharedPreferences.Editor editor = sPref.edit();
+            editor.putString("typeSortProfit", Profit_Activity.typeSortProfit);
             editor.apply();
         }
 
     }
 
-    public  void loadItem(String item){
+    public static void loadItem(String item,Context context){
+        SharedPreferences sPref;
         if(item.equals("times")) {
-            sPref = getSharedPreferences("times", MODE_PRIVATE);
+            sPref = context.getSharedPreferences("times", MODE_PRIVATE);
             times = sPref.getInt("times", 0);
         }
 
         if(item.equals("Balance")) {
-            sPref = getSharedPreferences("Balance", MODE_PRIVATE);
+            sPref = context.getSharedPreferences("Balance", MODE_PRIVATE);
             Balance = sPref.getFloat("Balance", 0);
         }
 
-        if(item.equals("typeSort")){
-            sPref = getSharedPreferences("typeSort", MODE_PRIVATE);
-            typeSort = sPref.getString("typeSort", "Все категории");
+        if(item.equals("typeSortPurchases")){
+            sPref = context.getSharedPreferences("typeSortPurchases", MODE_PRIVATE);
+            typeSortPurchases = sPref.getString("typeSortPurchases", "Все категории");
+        }
+
+        if(item.equals("typeSortProfit")){
+            sPref = context.getSharedPreferences("typeSortProfit", MODE_PRIVATE);
+            Profit_Activity.typeSortProfit = sPref.getString("typeSortProfit", "Все категории");
         }
 
     }
@@ -697,7 +724,6 @@ public class MainActivity extends AppCompatActivity {
            checkLimit();
        }
    }
-
 
 
 }

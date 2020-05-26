@@ -11,6 +11,7 @@
         android:title="@string/action_settings"
         app:showAsAction="never"/>
 
+
     <item
 
         android:id="@+id/settings_sorting_time"
@@ -26,6 +27,9 @@
         android:onClick="start_settings_sorting_type"
         android:title="@string/settings_sorting_type"
         app:showAsAction="never"/>
+
+
+
 
 
 </menu>
