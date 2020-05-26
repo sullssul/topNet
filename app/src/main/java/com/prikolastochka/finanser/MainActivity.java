@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private AppDatabase appDatabase;
     private float Balance=0;
     private int times;
+    private String typeSort;
 
     private ArrayList<String> types=new ArrayList<>();
 
@@ -122,9 +123,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        LoadBalance();
+        loadItem("Balance");
         loadData();
-        loadTimes();
+        loadItem("times");
         sortingBytime();
       //  setRecyclerView();
         setPiechartItem();
@@ -138,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                 types.add(typePurchases.getType_name_purchases());
             }
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void editPurchases(final Purchases purchases, final int position)
@@ -369,13 +369,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SaveBalance();
+        saveItem("Balance");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-       SaveBalance();
+       saveItem("Balance");
     }
 
     @Override
@@ -478,33 +478,72 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.go_next_in, R.anim.go_next_out);
     }
 
-    private void SaveBalance(){
-        sPref = getSharedPreferences("Balance",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putFloat("Balance", Balance);
-        editor.apply();
-    }
-
-    private void LoadBalance(){
-        sPref = getSharedPreferences("Balance",MODE_PRIVATE);
-        Balance = sPref.getFloat("Balance", 0);
-
-    }
-
-    private void saveTimes(){
-        sPref = getSharedPreferences("times",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putInt("times", times);
-        editor.apply();
-    }
-
-    private void loadTimes(){
-        sPref = getSharedPreferences("times",MODE_PRIVATE);
-        times = sPref.getInt("times", 0);
-    }
-
-
     public void start_settings_sorting_type(MenuItem item) {
+
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
+        @SuppressLint("InflateParams") View view = layoutInflaterAndroid.inflate(R.layout.edit_item, null);
+
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
+        alertDialogBuilderUserInput.setView(view);
+
+
+        final TextView textView= view.findViewById(R.id.titleTV);
+        final EditText nameEditText = view.findViewById(R.id.nameEditText);
+        final EditText priceEditText = view.findViewById(R.id.priceEditText);
+        final EditText decriptionEditText=view.findViewById(R.id.descriptiontEdit);
+        final EditText dateEditText=view.findViewById(R.id.dateEditText);
+        final Spinner spinner=view.findViewById(R.id.spinerEdit);
+
+        textView.setText("Выберите категории:");
+        nameEditText.setVisibility(View.GONE);
+        priceEditText.setVisibility(View.GONE);
+        decriptionEditText.setVisibility(View.GONE);
+        dateEditText.setVisibility(View.GONE);
+
+        spinner.setVisibility(View.VISIBLE);
+        ArrayAdapter<?> adapter =
+                ArrayAdapter.createFromResource(this, R.array.times, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+
+        loadItem("times");
+        if(times==0) {
+            spinner.setSelection(0);
+        } else if(times==1){
+            spinner.setSelection(1);
+        } else if(times==2){
+            spinner.setSelection(2);
+        } else if(times==3) {
+            spinner.setSelection(3);
+        }
+
+
+
+        alertDialogBuilderUserInput.setCancelable(true)
+                .setPositiveButton("Сохранить", new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        times=spinner.getSelectedItemPosition();
+                        saveItem("times");
+                        loadData();
+                        sortingBytime();
+                    }
+                });
+        alertDialogBuilderUserInput.setNegativeButton( "Отмена", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+
+            }
+        } );
+
+
+        final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+        alertDialog.show();
 
     }
 
@@ -536,7 +575,7 @@ public class MainActivity extends AppCompatActivity {
 
         spinner.setAdapter(adapter);
 
-        loadTimes();
+        loadItem("times");
         if(times==0) {
             spinner.setSelection(0);
         } else if(times==1){
@@ -556,7 +595,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
 
                         times=spinner.getSelectedItemPosition();
-                        saveTimes();
+                        saveItem("times");
                         loadData();
                         sortingBytime();
                     }
@@ -573,6 +612,50 @@ public class MainActivity extends AppCompatActivity {
 
         final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
         alertDialog.show();
+    }
+
+    public  void saveItem(String item){
+
+        if(item.equals("times")){
+        sPref = getSharedPreferences("times",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sPref.edit();
+        editor.putInt("times", times);
+        editor.apply();
+
+        }
+
+        if(item.equals("Balance")) {
+            sPref = getSharedPreferences("Balance", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sPref.edit();
+            editor.putFloat("Balance", Balance);
+            editor.apply();
+        }
+
+        if(item.equals("typeSort")){
+            sPref = getSharedPreferences("typeSort",MODE_PRIVATE);
+            SharedPreferences.Editor editor = sPref.edit();
+            editor.putString("typeSort", typeSort);
+            editor.apply();
+        }
+
+    }
+
+    public  void loadItem(String item){
+        if(item.equals("times")) {
+            sPref = getSharedPreferences("times", MODE_PRIVATE);
+            times = sPref.getInt("times", 0);
+        }
+
+        if(item.equals("Balance")) {
+            sPref = getSharedPreferences("Balance", MODE_PRIVATE);
+            Balance = sPref.getFloat("Balance", 0);
+        }
+
+        if(item.equals("typeSort")){
+            sPref = getSharedPreferences("typeSort", MODE_PRIVATE);
+            typeSort = sPref.getString("typeSort", "Все категории");
+        }
+
     }
 
     @SuppressLint("StaticFieldLeak")
