@@ -52,7 +52,6 @@ import java.util.Locale;
 import java.util.Random;
 
 import Data.AppDatabase;
-import Model.Profit;
 import Model.Purchases;
 
 import Model.TypesOfPurchases;
@@ -360,6 +359,7 @@ public class MainActivity extends AppCompatActivity {
             float limit = Float.parseFloat(sPrefSettings.getString("Limit", "50000"));
             float totalSum = 0;
             for (Purchases purchases : purchasesArrayList) {
+                if(purchases.getMonth()==Integer.parseInt(dateText.substring(3,5)))
                 totalSum += purchases.getSum();
             }
             if (totalSum > limit) {

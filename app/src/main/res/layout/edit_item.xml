@@ -35,7 +35,7 @@
         android:background="@android:color/transparent"
         android:gravity="top"
         android:hint="Сумма"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp" />
 
