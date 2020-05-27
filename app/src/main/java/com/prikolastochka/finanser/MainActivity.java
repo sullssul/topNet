@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -30,6 +31,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -58,18 +60,18 @@ import Model.TypesOfPurchases;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecyclerView recyclerView;
-    RecyclerView.LayoutManager layoutManager;
+    private RecyclerView recyclerView;
     private DataAdapter dataAdapter;
 
     private ArrayList<TypesOfPurchases> typesOfPurchases= new ArrayList<>();
     private ArrayList<Purchases> purchasesArrayList= new ArrayList<>();
     private HashMap<String,Float> piechartItem= new HashMap<>();
     private NotificationManager notifManager;
+    private float startX;
 
-    Date currentDate = new Date();
-    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-    String dateText = dateFormat.format(currentDate);
+    private Date currentDate = new Date();
+    private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+    private String dateText = dateFormat.format(currentDate);
 
     private AppDatabase appDatabase;
     @SuppressLint("StaticFieldLeak")
@@ -369,6 +371,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: //первое касание
+                startX = event.getX();
+                break;
+            case MotionEvent.ACTION_UP: //отпускание
+                float stopX = event.getX();
+                if (stopX < startX) {
+                    Intent intent = new Intent(this, Profit_Activity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.go_next_in, R.anim.go_next_out);
+
+                }
+                break;
+        }
+        return true;
+
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         saveItem("Balance",context);
@@ -426,10 +450,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recylerView);
         recyclerView.setHasFixedSize(true);
         dataAdapter = new DataAdapter(purchasesArrayList, MainActivity.this);
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
         recyclerView.setAdapter(dataAdapter);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, DividerItemDecoration.VERTICAL));
     }
 
     @SuppressLint("SetTextI18n")

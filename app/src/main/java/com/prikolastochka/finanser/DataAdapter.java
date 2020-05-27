@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,16 +34,14 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final Purchases purchases = purchasesArrayList.get(position);
-        String title = purchases.getSum() + ";\t"
-                + purchases.getName()
-                + ";\tКатегория: "
-                + purchases.getTypesOfPurchasesName()
-                + ";\tДата: " + purchases.getData();
-
-            holder.title.setText(title);
+            holder.sum.setText(""+purchases.getSum());
+            holder.name.setText(""+purchases.getName());
+            holder.date.setText("Дата: "+purchases.getData());
+            holder.type.setText("Категория: "+purchases.getTypesOfPurchasesName());
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -65,13 +64,18 @@ public class DataAdapter extends  RecyclerView.Adapter<DataAdapter.ViewHolder> {
     {
 
 
-      TextView title;
+      TextView sum;
+      TextView name;
+      TextView type;
+      TextView date;
 
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
-
+            sum = itemView.findViewById(R.id.sum);
+            name = itemView.findViewById(R.id.name);
+            type = itemView.findViewById(R.id.type);
+            date = itemView.findViewById(R.id.date);
         }
 
 

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,12 +33,14 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final Profit profit = profitArrayList.get(position);
-        String title = profit.getSum() + ";\t" + profit.getName() + ";\tКатегория: " + profit.getTypeOfProfitName() + ";\tДата: " + profit.getDate();
-
-        holder.title.setText(title);
+        holder.sum.setText(""+profit.getSum());
+        holder.name.setText(""+profit.getName());
+        holder.date.setText("Дата: "+profit.getDate());
+        holder.type.setText("Категория: "+profit.getTypeOfProfitName());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -58,16 +61,17 @@ public class Data_adapter_profit extends  RecyclerView.Adapter<Data_adapter_prof
 //            View.OnClickListener
     {
 
-        //  public ImageView purcaheseImg;
-        TextView title;
-        //    public TextView description;
+        TextView sum;
+        TextView name;
+        TextView type;
+        TextView date;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // itemView.setOnClickListener(this);
-
-            // purcaheseImg =
-            title = itemView.findViewById(R.id.title);
+            sum = itemView.findViewById(R.id.sum);
+            name = itemView.findViewById(R.id.name);
+            type = itemView.findViewById(R.id.type);
+            date = itemView.findViewById(R.id.date);
 
         }
 

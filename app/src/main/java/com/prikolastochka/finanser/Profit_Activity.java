@@ -3,6 +3,7 @@ package com.prikolastochka.finanser;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -18,6 +19,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -52,10 +54,11 @@ public class Profit_Activity extends AppCompatActivity {
     private ArrayList<TypeOfProfit> typesOfProfit=new ArrayList<>();
     private ArrayList<Profit> profitArrayList= new ArrayList<>();
     private HashMap<String,Float> piechartItem= new HashMap<>();
+    private float startX;
 
-    Date currentDate = new Date();
-    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-    String dateText = dateFormat.format(currentDate);
+    private Date currentDate = new Date();
+    private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+    private String dateText = dateFormat.format(currentDate);
 
 
     private ArrayList<String> types=new ArrayList<>();
@@ -78,6 +81,7 @@ public class Profit_Activity extends AppCompatActivity {
 
 
     }
+
     private void loadData(){
         profitArrayList.clear();
         typesOfProfit.clear();
@@ -96,6 +100,7 @@ public class Profit_Activity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onStart() {
@@ -110,6 +115,8 @@ public class Profit_Activity extends AppCompatActivity {
         setRecyclerView();
         setPiechartItem();
         setTextView();
+
+
     }
     @Override
     protected void onDestroy() {
@@ -296,28 +303,27 @@ public class Profit_Activity extends AppCompatActivity {
         setRecyclerView();
     }
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//
-//
-//            switch (event.getAction()) {
-//                case MotionEvent.ACTION_DOWN: //первое касание
-//                    startX = event.getX();
-//                    break;
-//                case MotionEvent.ACTION_UP: //отпускание
-//                    float stopX = event.getX();
-//                    if (stopX > startX) {
-//                        Intent intent = new Intent(this, MainActivity.class);
-//                        startActivity(intent);
-//                        overridePendingTransition(R.anim.go_prev_in, R.anim.go_prev_out);
-//
-//                    }
-//                    break;
-//            }
-//            return true;
-//
-//
-//        }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: //первое касание
+                     startX = event.getX();
+                    break;
+                case MotionEvent.ACTION_UP: //отпускание
+                    float stopX = event.getX();
+                    if (stopX > startX) {
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.go_prev_in, R.anim.go_prev_out);
+
+                    }
+                    break;
+            }
+            return true;
+
+
+        }
 
     public void setRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.recylerView);
@@ -327,6 +333,7 @@ public class Profit_Activity extends AppCompatActivity {
 
         recyclerView.setAdapter(data_adapter_profit);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(Profit_Activity.this, DividerItemDecoration.VERTICAL));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
