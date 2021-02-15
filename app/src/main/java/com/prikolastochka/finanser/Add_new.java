@@ -102,7 +102,7 @@ public class Add_new extends AppCompatActivity  {
     protected void onStart() {
         super.onStart();
         Bundle arguments = getIntent().getExtras();
-        TextView textView=findViewById(R.id.textView);
+        TextView textView=findViewById(R.id.description_text_view);
         EditText editText=findViewById(R.id.description_edit_text);
 
         if(arguments!=null) {
